@@ -1,6 +1,6 @@
 import { context, reddit } from '@devvit/web/server';
 
-export const createPost = async () => {
+export async function createPost() {
   const { subredditName } = context;
   if (!subredditName) {
     throw new Error('subredditName is required');
@@ -8,9 +8,9 @@ export const createPost = async () => {
 
   return await reddit.submitCustomPost({
     splash: {
-      appDisplayName: 'drawwit-bot',
+      appDisplayName: 'drawwitetha3',
     },
-    subredditName: subredditName,
-    title: 'drawwit-bot',
+    subredditName,
+    title: 'drawwitetha3',
   });
-};
+}

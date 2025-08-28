@@ -4,10 +4,10 @@
     "dir": "assets/"
   },
   "post": {
-    "dir": "dist",
+    "dir": "dist/client",
     "entrypoints": {
       "default": {
-        "entry": "client/index.html"
+        "entry": "index.html"
       }
     }
   },
