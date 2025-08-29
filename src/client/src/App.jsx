@@ -6,7 +6,7 @@ import {
 import {
   Footer,
   Header, Main, MainForm,
-  NameFormDiv
+  NameFormDiv, NameInput, Question
 } from '../styled_components/nameForm.jsx';
 
 function App() {
@@ -18,7 +18,10 @@ function App() {
             <DrawwitLogo>Drawwit</DrawwitLogo>
           </Header>
           <Main>
-            <MainForm></MainForm>
+            <MainForm>
+              <Question>What is your contest about?</Question>
+              <NameInput></NameInput>
+            </MainForm>
           </Main>
           <Footer></Footer>
         </NameFormDiv>
