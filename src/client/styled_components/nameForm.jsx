@@ -37,6 +37,14 @@ export const MainForm = styled.div`
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
   @media (max-width: 710px) {
     // mobile
+    width: 90%;
+  }
+  @media (max-height: 710px) {
+    // mobile input
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
   }
   @media (min-width: 710px) and (max-width: 1100px) {
     // desktop
@@ -56,10 +64,11 @@ export const Question = styled.div`
   text-align: center;
   @media (max-width: 710px) {
     // mobile
+    font-size: 50px;
   }
   @media (min-width: 710px) and (max-width: 1100px) {
     // desktop
-    
+    font-size: 30px;
   }
 `
 
@@ -71,9 +80,11 @@ const InputMainDiv = styled.div`
   justify-content: center;
   @media (max-width: 710px) {
     // mobile
+    align-items: center;
   }
   @media (min-width: 710px) and (max-width: 1100px) {
     // desktop
+    align-items: center;
   }
 `
 const Input = styled.input`
@@ -86,13 +97,15 @@ const Input = styled.input`
   text-align: center;
   @media (max-width: 710px) {
     // mobile
+    height: 60%;
+    width: 95%;
   }
   @media (min-width: 710px) and (max-width: 1100px) {
     // desktop
     border: 3px solid black;
     border-radius: 15px;
-    height: 95%;
-    width: 60%;
+    height: 60%;
+    width: 95%;
   }
   
 `

@@ -24,6 +24,7 @@ export const MainBackgroundContainer = styled.div`
   background-image: url("${background}");
   font-size: 50px;
   font-family: 'Gloria Hallelujah', cursive;
+  position: relative;
 `
 export const DrawwitLogo = styled.div`
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
