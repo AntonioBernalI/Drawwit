@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { motion } from 'framer-motion';
 
 export const NameFormDiv = styled.div`
   width: 70%;
@@ -25,10 +26,12 @@ export const Main = styled.div`
 export const Footer = styled.div`
   width: 100%;
   height: 25%;
-  background-color: #00f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 
-export const MainForm = styled.div`
+export const MainForm = styled(motion.div)`
   width: 80%;
   height: 95%;
   border: 4px solid black;
@@ -39,7 +42,8 @@ export const MainForm = styled.div`
     // mobile
     width: 90%;
   }
-  @media (max-height: 710px) {
+  @media (max-height: 1000px) and (max-width: 710px)  {
+    height: 60%;
     // mobile input
     position: absolute;
     transform: translate(-50%, -50%);
@@ -116,3 +120,27 @@ export const NameInput = () => {
     </InputMainDiv>
   )
 }
+
+export const MainButton = styled(motion.div)`
+  width: 40%;
+  height: 90%;
+  background-color: #af25ff;
+  border-radius: 75px;
+  border: 4px solid black;
+  user-select: none;
+  @media (max-width: 710px) {
+    // mobile
+    height: 60%;
+    font-size: 50px;
+  }
+  @media (min-width: 710px) and (max-width: 1100px) {
+    // desktop
+    border: 3px solid black;
+    font-size: 50px;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 90px;
+`
+

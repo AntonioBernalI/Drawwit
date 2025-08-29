@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import background from '/background.png';
-
+import { motion } from 'framer-motion';
 //---sizes---//
 // mobile 0 < x <= 710 px
 // desktop 710 < x < 1100 px
 // fullscreen  1100px <= x
-
 // @media (max-width: 710px) {
 //   // mobile
 // }
@@ -26,7 +25,7 @@ export const MainBackgroundContainer = styled.div`
   font-family: 'Gloria Hallelujah', cursive;
   position: relative;
 `
-export const DrawwitLogo = styled.div`
+export const DrawwitLogo = styled(motion.div)`
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
   width: 50% ;
