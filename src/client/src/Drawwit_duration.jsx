@@ -15,63 +15,10 @@ import {
   Question,
 } from '../styled_components/nameForm.jsx';
 import { ErrorMsgDiv } from '../styled_components/apiErrorMessages.jsx';
+import { DurationWarning } from '../styled_components/durationForm.jsx';
 
-function NameFormScreen({nameFormSaver, onError, onNext, children}) {
-  const [err, setErr] = useState(false);
-  const [username, setUsername] = useState("not initialized");
-  const [contestTheme, setContestTheme] = useState("");
+function DurationFormScreen({nameFormSaver, onError, onNext}) {
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/api/current-username');
-        if (!res.ok) {
-          throw new Error(`Error HTTP: ${res.status}`);
-        }
-        const data = await res.json();
-        if (!data.error) {
-          setUsername(data.username);
-        }
-      } catch (err) {
-        // setErr(err.message || 'unknown error');
-      }
-    })();
-  }, []);
-
-  const onWrite = (e) =>{
-    setContestTheme(e.target.value);
-  };
-
-  // 👉 Lógica común para "Next"
-  const handleNext = useCallback(() => {
-    if (!contestTheme.trim()) {
-      onError("Your contest must have a theme!");
-      return;
-    }
-
-    nameFormSaver({
-      aleph: username,
-      contestTheme: contestTheme,
-      screen: "drawwit"
-    });
-
-    onNext();
-  }, [contestTheme, username, nameFormSaver, onError, onNext]);
-
-  // 👉 Listener de Enter
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleNext();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleNext]);
 
   return (
     <>
@@ -103,12 +50,12 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
             Drawwit
           </DrawwitLogo>
         </Header>
-
         <Main
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
+          style={{background: "#0f0"}}
         >
           <MainForm
             initial={{opacity: 0 }}
@@ -121,10 +68,13 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
+              style={{
+                height: "43%",
+              }}
             >
-              What is your contest about?
+              How long is your contest?
             </Question>
-            <NameInput value={contestTheme} onChange={onWrite}/>
+            <DurationWarning>Contest duration: 1h–6d.</DurationWarning>
           </MainForm>
         </Main>
 
@@ -140,30 +90,14 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
             exit={{ opacity: 0}}
             transition={{ duration: 0.2 }}
             whileTap={{ scale: 1.1, rotate: 15 }}
-            onClick={handleNext}
+            onClick={()=>{}}
           >
             Next
           </MainButton>
         </Footer>
       </NameFormDiv>
-      <AnimatePresence initial={false}>
-        {err && (
-          <ErrorMsgDiv
-            key="error-msg"
-            initial={{ opacity: 0, scale: 0}}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-          >
-            {"Houston we have a problem:"}
-            <br />
-            <br/>
-            {err}
-          </ErrorMsgDiv>
-        )}
-      </AnimatePresence>
     </>
   );
 }
 
-export default NameFormScreen;
+export default DurationFormScreen;

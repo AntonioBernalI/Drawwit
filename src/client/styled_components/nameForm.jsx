@@ -113,10 +113,10 @@ const Input = styled.input`
   }
   
 `
-export const NameInput = () => {
+export const NameInput = ({onChange}) => {
   return (
     <InputMainDiv>
-      <Input></Input>
+      <Input onChange={onChange}></Input>
     </InputMainDiv>
   )
 }
