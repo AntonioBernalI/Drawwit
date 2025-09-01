@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import {
   DrawwitLogo,
-  MainBackgroundContainer
 } from '../styled_components/common.jsx';
 import {
   Footer,
@@ -11,14 +10,63 @@ import {
   MainButton,
   MainForm,
   NameFormDiv,
-  NameInput,
   Question,
 } from '../styled_components/nameForm.jsx';
 import { ErrorMsgDiv } from '../styled_components/apiErrorMessages.jsx';
-import { DurationWarning } from '../styled_components/durationForm.jsx';
+import { DurationWarning, TimeHandler } from '../styled_components/durationForm.jsx';
 
-function DurationFormScreen({nameFormSaver, onError, onNext}) {
+function DurationFormScreen({durationFormSaver, onError, onNext}) {
+  const [deadlineDays, setDeadlineDays] = useState(0);
+  const [deadlineHours, setDeadlineHours] = useState(0);
+  const [deadlineMinutes, setDeadlineMinutes] = useState(0);
 
+  const [kickoffDate, setKickoffDate] = useState({});
+
+  useEffect(() => {
+    const now = new Date();
+    setKickoffDate({
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+      day: now.getDate(),
+      hour: now.getHours(),
+      minute: now.getMinutes()
+    });
+  }, []);
+
+  const handleNext = useCallback(() => {
+    const totalMinutes = deadlineDays * 24 * 60 + deadlineHours * 60 + deadlineMinutes;
+
+    const minMinutes = 60;          // 1 hora
+    const maxMinutes = 6 * 24 * 60; // 6 días
+
+    if (totalMinutes < minMinutes || totalMinutes > maxMinutes) {
+      onError("Duration out of range. Allowed: 1 hour – 6 days.");
+      return;
+    }
+
+    durationFormSaver({
+      deadlineDays: deadlineDays,
+      deadlineHours: deadlineHours,
+      deadlineMinutes: deadlineMinutes,
+      kickoffDate: kickoffDate
+    });
+
+    onNext();
+  }, [deadlineDays, deadlineHours, deadlineMinutes, onError, onNext]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleNext]);
 
   return (
     <>
@@ -55,10 +103,9 @@ function DurationFormScreen({nameFormSaver, onError, onNext}) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          style={{background: "#0f0"}}
         >
           <MainForm
-            initial={{opacity: 0 }}
+            initial={{opacity: 0}}
             animate={{opacity: 1 }}
             exit={{opacity: 0 }}
             transition={{ duration: 0.3 }}
@@ -74,7 +121,12 @@ function DurationFormScreen({nameFormSaver, onError, onNext}) {
             >
               How long is your contest?
             </Question>
-            <DurationWarning>Contest duration: 1h–6d.</DurationWarning>
+            <DurationWarning>Contest duration: 1 hour to 6 days.</DurationWarning>
+            <TimeHandler
+              onDay={(e)=> setDeadlineDays(parseInt(e.target.value || 0))}
+              onHour={(e)=> setDeadlineHours(parseInt(e.target.value || 0))}
+              onMinute={(e)=> setDeadlineMinutes(parseInt(e.target.value || 0))}
+            />
           </MainForm>
         </Main>
 
@@ -90,7 +142,7 @@ function DurationFormScreen({nameFormSaver, onError, onNext}) {
             exit={{ opacity: 0}}
             transition={{ duration: 0.2 }}
             whileTap={{ scale: 1.1, rotate: 15 }}
-            onClick={()=>{}}
+            onClick={handleNext}
           >
             Next
           </MainButton>

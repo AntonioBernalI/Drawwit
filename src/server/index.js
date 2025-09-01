@@ -15,6 +15,12 @@ router.get('/api/current-username', async (_req, res) => {
   res.json({ username });
 });
 
+router.post('/api/log-message', async (req, res) => {
+  const { message } = req.body;
+  console.log('Received message:', message);
+  res.status(200).json({ status: 'logged' });
+});
+
 app.use(router);
 
 const server = createServer(app);

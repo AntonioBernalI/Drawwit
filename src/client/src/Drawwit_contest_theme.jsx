@@ -16,7 +16,7 @@ import {
 } from '../styled_components/nameForm.jsx';
 import { ErrorMsgDiv } from '../styled_components/apiErrorMessages.jsx';
 
-function NameFormScreen({nameFormSaver, onError, onNext, children}) {
+function NameFormScreen({nameFormSaver, onError, onNext}) {
   const [err, setErr] = useState(false);
   const [username, setUsername] = useState("not initialized");
   const [contestTheme, setContestTheme] = useState("");
@@ -33,7 +33,7 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
           setUsername(data.username);
         }
       } catch (err) {
-        // setErr(err.message || 'unknown error');
+        setErr(err.message || 'unknown error');
       }
     })();
   }, []);
@@ -42,7 +42,6 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
     setContestTheme(e.target.value);
   };
 
-  // 👉 Lógica común para "Next"
   const handleNext = useCallback(() => {
     if (!contestTheme.trim()) {
       onError("Your contest must have a theme!");
@@ -80,13 +79,13 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.25 }}
+        transition={{ duration: 0.5 }}
       >
         <Header
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -20, opacity: 0 }}
-          transition={{ type: "tween", duration: 0.25 }}
+          transition={{ type: "tween", duration: 0.5 }}
         >
           <DrawwitLogo
             initial={{ scale: 0, rotateX: -180, opacity: 0 }}
@@ -96,8 +95,8 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
               type: "spring",
               stiffness: 70,
               damping: 14,
-              delay: 0.2,
-              duration: 0.2,
+              delay: 0.5,
+              duration: 0.5,
             }}
           >
             Drawwit
@@ -108,19 +107,19 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.5 }}
         >
           <MainForm
             initial={{opacity: 0 }}
             animate={{opacity: 1 }}
             exit={{opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.5 }}
           >
             <Question
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.5 }}
             >
               What is your contest about?
             </Question>
@@ -132,13 +131,13 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
           initial={{opacity: 0 }}
           animate={{opacity: 1 }}
           exit={{opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: 0.5 }}
         >
           <MainButton
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0}}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.5 }}
             whileTap={{ scale: 1.1, rotate: 15 }}
             onClick={handleNext}
           >
@@ -146,6 +145,7 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
           </MainButton>
         </Footer>
       </NameFormDiv>
+
       <AnimatePresence initial={false}>
         {err && (
           <ErrorMsgDiv
@@ -153,7 +153,7 @@ function NameFormScreen({nameFormSaver, onError, onNext, children}) {
             initial={{ opacity: 0, scale: 0}}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
           >
             {"Houston we have a problem:"}
             <br />
