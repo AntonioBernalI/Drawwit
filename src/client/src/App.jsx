@@ -4,6 +4,7 @@ import { ErrorMsg } from '../styled_components/userErrorMessage.jsx';
 import { MainBackgroundContainer } from '../styled_components/common.jsx';
 import { AnimatePresence } from 'framer-motion';
 import DurationFormScreen from './Drawwit_duration.jsx';
+import { DrawwitDesktopWarning } from './Drawwit_desktop_warning.jsx';
 
 function App() {
   const [err, setErr] = useState(null);
@@ -95,6 +96,12 @@ function App() {
           }}
           onNext={() => { setAppStage("canvas"); }}
         />
+      );
+    } else if (appStage === "canvas") {
+      return (
+        <>
+          <DrawwitDesktopWarning></DrawwitDesktopWarning>
+        </>
       );
     } else {
       return null;
