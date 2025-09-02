@@ -25,5 +25,4 @@ app.use(router);
 
 const server = createServer(app);
 server.listen(getServerPort(), () => {
-  console.log(`http://localhost:${getServerPort()}`);
 });

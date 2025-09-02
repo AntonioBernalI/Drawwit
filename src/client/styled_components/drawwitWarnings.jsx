@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-
-export const WarningContainer = styled.div`
+import { motion } from 'framer-motion';
+export const WarningContainer = styled(motion.div)`
   width: 100%;
   height: 100%;
   border: 4px solid white;
@@ -14,4 +14,5 @@ export const WarningContainer = styled.div`
   color: white;
   font-size: 50px;
   text-align: center;
+  background-color: black;
 `

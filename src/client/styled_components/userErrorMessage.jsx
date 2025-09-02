@@ -17,7 +17,7 @@ const ErrorMsgDiv = styled(motion.div)`
   height: 60%;
   @media (max-width: 710px) {
     // mobile
-    height: 30%;
+    height: 40%;
     width: 90%;
   }
   background-color: #ffbdde;
@@ -63,7 +63,7 @@ const Message = styled.div`
   }
   @media (max-width: 710px) {
     // mobile
-    width: 70%;
+    width: 90%;
     height: 100%;
     font-size: 50px;
   }

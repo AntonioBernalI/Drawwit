@@ -12,6 +12,16 @@ function App() {
 
   const [motherHash, setMotherHash] = useState({});
 
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   async function devvitLog(message) {
     try {
       const res = await fetch('/api/log-message', {
@@ -47,7 +57,11 @@ function App() {
   }, [motherHash.aleph, motherHash.contestTheme, motherHash.screen]);
 
   useEffect(() => {
-    if (motherHash.deadlineDays && motherHash.deadlineHours && motherHash.deadlineMinutes && motherHash.kickoffDate) {
+    const hasDuration =
+      ['deadlineDays', 'deadlineHours', 'deadlineMinutes']
+        .every((k) => motherHash[k] !== undefined && motherHash[k] !== null);
+
+    if (hasDuration && motherHash.kickoffDate) {
       const logUser = async () => {
         try {
           await devvitLog(`--------${motherHash.aleph} contest days deadline: ${motherHash.deadlineDays}`);
@@ -55,12 +69,13 @@ function App() {
           await devvitLog(`--------${motherHash.aleph} contest minutes deadline: ${motherHash.deadlineMinutes}`);
           await devvitLog(`--------${motherHash.aleph} contest kickoff: ${JSON.stringify(motherHash.kickoffDate)}`);
         } catch (err) {
-          setErr(`Error logging , please contact u/Ibaniez ${err}`)
+          setErr(`Error logging , please contact u/Ibaniez ${err}`);
         }
       };
       logUser();
     }
   }, [motherHash.deadlineDays, motherHash.deadlineHours, motherHash.deadlineMinutes, motherHash.kickoffDate]);
+
 
 
   const renderScreen = () => {
@@ -97,10 +112,12 @@ function App() {
           onNext={() => { setAppStage("canvas"); }}
         />
       );
-    } else if (appStage === "canvas") {
+    } else if (appStage === "canvas" && width > 710 && width < 1100) {
       return (
         <>
-          <DrawwitDesktopWarning></DrawwitDesktopWarning>
+          <DrawwitDesktopWarning
+            key = "canvas"
+          ></DrawwitDesktopWarning>
         </>
       );
     } else {
