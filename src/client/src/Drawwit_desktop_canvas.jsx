@@ -8,12 +8,13 @@ import {
   ToolContainer,
   ToolsMainContainer,
   Tool,
-  ButtonContainer, AccesibilityButton, CreateContestButton,
+  ButtonContainer, AccesibilityButton, CreateContestButton, CanvasDesign, DrawingTitle, DeletingModeAdvisor,
 } from '../styled_components/canvas.jsx';
 import Pencil from '/Pencil.png';
 import Eraser from '/Eraser.png';
 import Shapes from '/Shapes.png';
 import Text from '/Text.png';
+import FabricCanvas from './Fabric_canvas.jsx';
 
 function DrawwitDesktopCanvas() {
   const [width, setWidth] = useState(window.innerWidth);
@@ -45,7 +46,6 @@ function DrawwitDesktopCanvas() {
     return {
       width: newWidth,
       height: newHeight,
-      scale
     };
   }
 
@@ -60,7 +60,27 @@ function DrawwitDesktopCanvas() {
         alignItems: 'center',
       }}
     >
-      <CanvasMainContainer></CanvasMainContainer>
+      <CanvasMainContainer>
+        <DrawingTitle
+          initial={{x: -100}}
+          animate={{x:0}}
+          transition={{duration: 0.5}}
+        >
+          Epic Face
+        </DrawingTitle>
+        <DeletingModeAdvisor
+          initial={{x: -100}}
+          animate={{x:0}}
+          transition={{duration: 0.5}}
+        >
+          Deleting Mode: On
+        </DeletingModeAdvisor>
+        <FabricCanvas
+          widthOfCanvas={0.9 * 0.65 *fitRectangle(840, 460, width, height).width}
+          heightOfCanvas={0.75 * fitRectangle(840, 460, width, height).height}
+        >
+        </FabricCanvas>
+      </CanvasMainContainer>
       <ToolsMainContainer>
         <ToolbarContainer>
           <Toolbar>
@@ -129,8 +149,8 @@ function DrawwitDesktopCanvas() {
         <ButtonContainer>
           {/*<AccesibilityButton>Im Left handed!</AccesibilityButton>*/}
           <CreateContestButton
-            initial={{scale: 0}}
-            animate={{scale: 1}}
+            initial={{y: -100, scale: 0}}
+            animate={{y:0, scale:1}}
             transition={{duration: 0.5}}
             whileTap={{scale: 0.9}}
           >Create Contest</CreateContestButton>

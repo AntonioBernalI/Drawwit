@@ -1,9 +1,12 @@
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+
 export const CanvasMainContainer = styled.div`
   height: 100%;
   width:   65%;
-  background-color: blue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
 export const ToolsMainContainer = styled.div`
   height: 100%;
@@ -78,4 +81,51 @@ export const CreateContestButton = styled(motion.div)`
   align-items: center;
   justify-content: center;
   line-height: 75px;
+  user-select: none;
+`;
+
+export const CanvasDesign = styled(motion.div)`
+  height: 75%;
+  width:  90%;
+  border-radius: 30px;
+  border: 4px solid black;
+  background-color: #ffbdde;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+`
+export const DrawingTitle = styled(motion.div)`
+  width: 30%;
+  height: 15%;
+  background-color: #af25ff;
+  border-radius: 30px;
+  border: 4px solid black;
+  position: absolute;
+  top: 6%;
+  left: 10%;
+  font-size: 60px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+  text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+  z-index: 99;
+`;
+
+export const DeletingModeAdvisor = styled(motion.div)`
+  width: 17%;
+  height: 12%;
+  background-color: red;
+  border-radius: 30px;
+  border: 4px solid black;
+  position: absolute;
+  top: 9%;
+  left: 45%;
+  font-size: 32px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+  text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+  z-index: 99;
 `
