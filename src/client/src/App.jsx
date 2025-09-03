@@ -5,6 +5,93 @@ import { MainBackgroundContainer } from '../styled_components/common.jsx';
 import { AnimatePresence } from 'framer-motion';
 import DurationFormScreen from './Drawwit_duration.jsx';
 import { DrawwitDesktopWarning } from './Drawwit_desktop_warning.jsx';
+import DrawwitDesktopCanvas from './Drawwit_desktop_canvas.jsx';
+
+/**
+ * Main application component for Drawwit.
+ *
+ * This component manages the contest creation flow in three stages:
+ * 1. **name** – Form for entering the user identifier and contest theme.
+ * 2. **duration** – Form for specifying contest duration and kickoff date.
+ * 3. **canvas** – Canvas warning screen for desktop when window width is between 710px and 1100px.
+ *
+ * It also handles error display, logging user actions to a backend,
+ * and responsive rendering depending on the screen size.
+ *
+ * @component
+ * @returns {JSX.Element} Rendered application component.
+ */
+
+/**
+ * Application error state.
+ *
+ * @typedef {Object} ErrorState
+ * @property {string|null} err - Current error message or `null` if no error exists.
+ */
+
+/**
+ * Application stage state.
+ *
+ * @typedef {"name"|"duration"|"canvas"} AppStage
+ */
+
+/**
+ * Contest data object used throughout the application.
+ *
+ * @typedef {Object} MotherHash
+ * @property {string} [aleph] - User identifier.
+ * @property {string} [contestTheme] - Contest theme.
+ * @property {string} [screen] - Current screen identifier.
+ * @property {number} [deadlineDays] - Contest deadline in days.
+ * @property {number} [deadlineHours] - Contest deadline in hours.
+ * @property {number} [deadlineMinutes] - Contest deadline in minutes.
+ * @property {Date} [kickoffDate] - Contest kickoff date.
+ */
+
+/**
+ * Logs messages to the `/api/log-message` endpoint.
+ *
+ * @async
+ * @function devvitLog
+ * @param {string} message - Message to be logged.
+ * @returns {Promise<void>} Resolves when the message is successfully logged.
+ * @throws {Error} If the request fails or the response is not OK.
+ */
+
+/**
+ * Window resize effect.
+ *
+ * Adds a `resize` event listener to update the window width state.
+ * Cleans up the listener when the component unmounts.
+ *
+ * @effect
+ */
+
+/**
+ * User logging effect.
+ *
+ * When `motherHash` contains `aleph`, `contestTheme`, and `screen`,
+ * logs initial contest creation activity.
+ *
+ * @effect
+ */
+
+/**
+ * Contest duration logging effect.
+ *
+ * When all duration values (`deadlineDays`, `deadlineHours`, `deadlineMinutes`)
+ * and `kickoffDate` exist in `motherHash`, logs contest timing information.
+ *
+ * @effect
+ */
+
+/**
+ * Renders the correct screen based on the current application stage.
+ *
+ * @function renderScreen
+ * @returns {JSX.Element|null} The screen component for the active stage, or `null`.
+ */
+
 
 function App() {
   const [err, setErr] = useState(null);
@@ -118,6 +205,12 @@ function App() {
           <DrawwitDesktopWarning
             key = "canvas"
           ></DrawwitDesktopWarning>
+        </>
+      );
+    } else if (appStage === "canvas" && width >= 1100) {
+      return (
+        <>
+          <DrawwitDesktopCanvas/>
         </>
       );
     } else {
