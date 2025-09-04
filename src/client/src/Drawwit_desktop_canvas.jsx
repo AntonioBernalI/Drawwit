@@ -86,6 +86,7 @@ function DrawwitDesktopCanvas() {
       <AnimatePresence>
         <ToolsMainContainer >
           <DrawwitTextSelector key={"textSelector"}/>
+
           {/*<ToolbarContainer>*/}
           {/*  <Toolbar>*/}
           {/*    <ToolContainer>*/}
@@ -102,7 +103,6 @@ function DrawwitDesktopCanvas() {
           {/*        <img src={Pencil} height={"92%"} width={"75%"} />*/}
           {/*      </Tool>*/}
           {/*    </ToolContainer>*/}
-
           {/*    <ToolContainer>*/}
           {/*      <Tool*/}
           {/*        onClick={() => setSelectedButton("eraser")}*/}
@@ -147,7 +147,6 @@ function DrawwitDesktopCanvas() {
           {/*        <img src={Text} height={"90%"} width={"70%"} />*/}
           {/*      </Tool>*/}
           {/*    </ToolContainer>*/}
-
           {/*  </Toolbar>*/}
           {/*</ToolbarContainer>*/}
           {/*<ButtonContainer>*/}

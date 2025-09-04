@@ -11,7 +11,6 @@ export const CanvasMainContainer = styled.div`
 export const ToolsMainContainer = styled.div`
   height: 100%;
   width: 35%;
-  background-color: red;
 `
 export const ToolbarContainer = styled.div`
   width: 100%;
