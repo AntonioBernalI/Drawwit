@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { CanvasDesign } from "../styled_components/canvas.jsx";
-import { Canvas } from "fabric";
+import { Canvas , PencilBrush} from "fabric";
 
 function FabricCanvas({ widthOfCanvas, heightOfCanvas }) {
   const canvasRef = useRef(null);
@@ -14,13 +14,17 @@ function FabricCanvas({ widthOfCanvas, heightOfCanvas }) {
     });
 
     canvas.isDrawingMode = true;
-    canvas.freeDrawingBrush.width = 5;
-    canvas.freeDrawingBrush.color = "blue";
 
+    // crea el pincel antes de asignar propiedades
+    const brush = new PencilBrush(canvas);
+    brush.width = 5;
+    brush.color = "blue";
+    canvas.freeDrawingBrush = brush;
+    
     return () => {
       canvas.dispose();
     };
-  }, []);
+  }, [widthOfCanvas, heightOfCanvas]);
 
   return (
     <CanvasDesign
@@ -28,7 +32,6 @@ function FabricCanvas({ widthOfCanvas, heightOfCanvas }) {
       animate={{ x: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* agrega un id por si lo usas como string */}
       <canvas ref={canvasRef} id="fabric-canvas" />
     </CanvasDesign>
   );
