@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
+  Backdrop,
   Color,
   ColorContainer,
   ColorLabel,
-  Container,
+  Container, FontOptions,
   HeaderContainer,
   MainContainer,
   SelectorContainer,
@@ -16,12 +17,15 @@ import {
   StyleLabel,
   TitleContainer,
 } from '../styled_components/selectors.jsx';
+import { AnimatePresence } from 'framer-motion';
 
 function DrawwitTextSelector() {
+  const [currentScreen, setCurrentScreen] = useState("none");
+
   return (
     <MainContainer
-      initial={{x: 100}}
-      animate={{x:0}}
+      initial={{x: 100, opacity: 0}}
+      animate={{x:0, opacity: 1}}
       transition={{duration: 0.5}}
     >
       <TitleContainer>Pencil</TitleContainer>
@@ -34,6 +38,9 @@ function DrawwitTextSelector() {
         <SelectorContainer>
           <SelectorFont
             whileTap={{scale:1.1}}
+            onClick={()=>{
+              setCurrentScreen("font");
+            }}
           >Comic Sans Ms</SelectorFont>
         </SelectorContainer>
       </Snippet>
@@ -109,6 +116,25 @@ function DrawwitTextSelector() {
           </StyleContainer>
         </SelectorContainer>
       </Snippet>
+      {
+        currentScreen === "font" && (
+          <AnimatePresence>
+            <Backdrop
+              initial={{opacity:0}}
+              animate={{opacity:1}}
+              transition={{duration: 0.2}}
+              key={"backdrop"}
+            >
+              <FontOptions
+                initial={{scale:0}}
+                animate={{scale:1}}
+                transition={{duration: 0.2}}
+                key={"keyOptions"}
+              />
+            </Backdrop>
+          </AnimatePresence>
+        )
+      }
     </MainContainer>
   );
 }

@@ -144,3 +144,27 @@ export const ColorLabel = styled.div`
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
   user-select: none;
 `
+
+export const Backdrop = styled(motion.div)`
+  width: 150%;
+  height: 100%;
+  background-color: rgba(92, 92, 92, 0.73);
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  z-index: 110;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const FontOptions = styled(motion.div)`
+  width: 30%;
+  height: 75%;
+  background-color: white;
+  border-radius: 30px;
+  border: 4px solid black;
+  z-index: 120;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+`

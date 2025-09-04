@@ -21,8 +21,7 @@ import { AnimatePresence } from 'framer-motion';
 function DrawwitDesktopCanvas() {
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
-  const [selectedButton, setSelectedButton] = useState(null);
-
+  const [selectedButton, setSelectedButton] = useState("none");
   useEffect(() => {
     const handleResize = () => {
       setWidth(window.innerWidth);
@@ -60,6 +59,7 @@ function DrawwitDesktopCanvas() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
+        position: 'relative'
       }}
     >
       <CanvasMainContainer>
@@ -83,81 +83,112 @@ function DrawwitDesktopCanvas() {
         >
         </FabricCanvas>
       </CanvasMainContainer>
-      <AnimatePresence>
-        <ToolsMainContainer >
-          <DrawwitTextSelector key={"textSelector"}/>
+      <AnimatePresence mode={"wait"}>
+        <ToolsMainContainer key="toolsMainContainer">
+          {selectedButton === "pencil" && (
+            <DrawwitTextSelector key="textSelector" />
+          )}
 
-          {/*<ToolbarContainer>*/}
-          {/*  <Toolbar>*/}
-          {/*    <ToolContainer>*/}
-          {/*      <Tool*/}
-          {/*        onClick={() => setSelectedButton("pencil")}*/}
-          {/*        initial={{ scale: 0 }}*/}
-          {/*        animate={{ scale: 1 }}*/}
-          {/*        transition={{ duration: 0.5 }}*/}
-          {/*        whileTap={{ scale: 0.9 }}*/}
-          {/*        style={{*/}
-          {/*          border: selectedButton === "pencil" ? "4px solid white" : "4px solid black",*/}
-          {/*        }}*/}
-          {/*      >*/}
-          {/*        <img src={Pencil} height={"92%"} width={"75%"} />*/}
-          {/*      </Tool>*/}
-          {/*    </ToolContainer>*/}
-          {/*    <ToolContainer>*/}
-          {/*      <Tool*/}
-          {/*        onClick={() => setSelectedButton("eraser")}*/}
-          {/*        initial={{ scale: 0 }}*/}
-          {/*        animate={{ scale: 1 }}*/}
-          {/*        transition={{ duration: 0.5 }}*/}
-          {/*        whileTap={{ scale: 0.9 }}*/}
-          {/*        style={{*/}
-          {/*          border: selectedButton === "eraser" ? "4px solid white" : "4px solid black",*/}
-          {/*        }}*/}
-          {/*      >*/}
-          {/*        <img src={Eraser} height={"75%"} width={"65%"} />*/}
-          {/*      </Tool>*/}
-          {/*    </ToolContainer>*/}
+          {selectedButton === "none" && (
+            <React.Fragment key="toolbarAndButton">
+              <ToolbarContainer key="toolbarContainer">
+                <Toolbar key="toolbar">
+                  <ToolContainer key="toolContainer-pencil">
+                    <Tool
+                      key="tool-pencil"
+                      onClick={() => setSelectedButton("pencil")}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                      whileTap={{ scale: 0.9 }}
+                      style={{
+                        border:
+                          selectedButton === "pencil"
+                            ? "4px solid white"
+                            : "4px solid black",
+                      }}
+                    >
+                      <img key="img-pencil" src={Pencil} height={"92%"} width={"75%"} />
+                    </Tool>
+                  </ToolContainer>
 
-          {/*    <ToolContainer>*/}
-          {/*      <Tool*/}
-          {/*        onClick={() => setSelectedButton("shapes")}*/}
-          {/*        initial={{ scale: 0 }}*/}
-          {/*        animate={{ scale: 1 }}*/}
-          {/*        transition={{ duration: 0.5 }}*/}
-          {/*        whileTap={{ scale: 0.9 }}*/}
-          {/*        style={{*/}
-          {/*          border: selectedButton === "shapes" ? "4px solid white" : "4px solid black",*/}
-          {/*        }}*/}
-          {/*      >*/}
-          {/*        <img src={Shapes} height={"70%"} width={"60%"} />*/}
-          {/*      </Tool>*/}
-          {/*    </ToolContainer>*/}
+                  <ToolContainer key="toolContainer-eraser">
+                    <Tool
+                      key="tool-eraser"
+                      onClick={() => setSelectedButton("eraser")}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                      whileTap={{ scale: 0.9 }}
+                      style={{
+                        border:
+                          selectedButton === "eraser"
+                            ? "4px solid white"
+                            : "4px solid black",
+                      }}
+                    >
+                      <img key="img-eraser" src={Eraser} height={"75%"} width={"65%"} />
+                    </Tool>
+                  </ToolContainer>
 
-          {/*    <ToolContainer>*/}
-          {/*      <Tool*/}
-          {/*        onClick={() => setSelectedButton("text")}*/}
-          {/*        initial={{ scale: 0 }}*/}
-          {/*        animate={{ scale: 1 }}*/}
-          {/*        transition={{ duration: 0.5 }}*/}
-          {/*        whileTap={{ scale: 0.9 }}*/}
-          {/*        style={{*/}
-          {/*          border: selectedButton === "text" ? "4px solid white" : "4px solid black",*/}
-          {/*        }}*/}
-          {/*      >*/}
-          {/*        <img src={Text} height={"90%"} width={"70%"} />*/}
-          {/*      </Tool>*/}
-          {/*    </ToolContainer>*/}
-          {/*  </Toolbar>*/}
-          {/*</ToolbarContainer>*/}
-          {/*<ButtonContainer>*/}
-          {/*  /!*<AccesibilityButton>Im Left handed!</AccesibilityButton>*!/*/}
-          {/*  <CreateContestButton*/}
-          {/*    initial={{y: -100, scale: 0}}*/}
-          {/*    animate={{y:0, scale:1}}*/}
-          {/*    transition={{duration: 0.5}}*/}
-          {/*    whileTap={{scale: 0.9}}*/}
-          {/*  >Create Contest</CreateContestButton>*/}
-          {/*</ButtonContainer>*/}
+                  <ToolContainer key="toolContainer-shapes">
+                    <Tool
+                      key="tool-shapes"
+                      onClick={() => setSelectedButton("shapes")}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                      whileTap={{ scale: 0.9 }}
+                      style={{
+                        border:
+                          selectedButton === "shapes"
+                            ? "4px solid white"
+                            : "4px solid black",
+                      }}
+                    >
+                      <img key="img-shapes" src={Shapes} height={"70%"} width={"60%"} />
+                    </Tool>
+                  </ToolContainer>
+
+                  <ToolContainer key="toolContainer-text">
+                    <Tool
+                      key="tool-text"
+                      onClick={() => setSelectedButton("text")}
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.5 }}
+                      whileTap={{ scale: 0.9 }}
+                      style={{
+                        border:
+                          selectedButton === "text"
+                            ? "4px solid white"
+                            : "4px solid black",
+                      }}
+                    >
+                      <img key="img-text" src={Text} height={"90%"} width={"70%"} />
+                    </Tool>
+                  </ToolContainer>
+                </Toolbar>
+              </ToolbarContainer>
+
+              <ButtonContainer key="buttonContainer">
+                <CreateContestButton
+                  key="createContestButton"
+                  initial={{ y: -100, scale: 0 }}
+                  animate={{ y: 0, scale: 1 }}
+                  exit={{ y: -100, scale: 0 }}
+                  transition={{ duration: 0.5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  Create Contest
+                </CreateContestButton>
+              </ButtonContainer>
+            </React.Fragment>
+          )}
         </ToolsMainContainer>
       </AnimatePresence>
     </div>

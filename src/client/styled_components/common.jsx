@@ -24,6 +24,7 @@ export const MainBackgroundContainer = styled.div`
   font-size: 50px;
   font-family: 'Gloria Hallelujah', cursive;
   position: relative;
+  overflow: hidden;
 `
 export const DrawwitLogo = styled(motion.div)`
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
