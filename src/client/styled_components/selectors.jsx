@@ -168,3 +168,20 @@ export const FontOptions = styled(motion.div)`
   z-index: 120;
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
 `
+
+export const CloseIcon = styled(motion.div)`
+  width: 5%;
+  height: 10%;
+  border-radius: 50px;
+  background-color: #af25ff;
+  border: 3px solid black;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  right: 5%;
+  top: 20%;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px ;
+`

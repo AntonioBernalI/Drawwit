@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {
-  Backdrop,
+  Backdrop, CloseIcon,
   Color,
   ColorContainer,
   ColorLabel,
@@ -28,7 +28,8 @@ function DrawwitTextSelector() {
       animate={{x:0, opacity: 1}}
       transition={{duration: 0.5}}
     >
-      <TitleContainer>Pencil</TitleContainer>
+      <CloseIcon>X</CloseIcon>
+      <TitleContainer>Text</TitleContainer>
       <Snippet
       >
         <HeaderContainer>
