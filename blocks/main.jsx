@@ -52,10 +52,12 @@ Devvit.addCustomPostType({
   height: "regular",
   render: (_context) => {
     const [counter, setCounter] = useState(0);
-
+    const [text, setText] = useState("");
     const { mount } = useWebView({
       url: 'index.html',
-      onMessage: async () => {},
+      onMessage: async (message, hook) => {
+        hook.postMessage({ type: 'greeting', text: '`hello from earth: ${JSON.stringify(message)}`' })
+      },
     });
 
 

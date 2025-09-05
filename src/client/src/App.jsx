@@ -101,14 +101,6 @@ function App() {
 
   const [width, setWidth] = useState(window.innerWidth);
 
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   async function devvitLog(message) {
     try {
       const res = await fetch('/api/log-message', {
@@ -127,6 +119,25 @@ function App() {
       setErr(err);
     }
   }
+
+  useEffect(() => {
+
+    const handleResize = () => setWidth(window.innerWidth);
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (motherHash.aleph && motherHash.contestTheme && motherHash.screen) {
@@ -210,7 +221,12 @@ function App() {
     } else if (appStage === "canvas" && width >= 1100) {
       return (
         <>
-          <DrawwitDesktopCanvas/>
+          <DrawwitDesktopCanvas onGetDrawing={ async (canvas)=>{
+            window.postMessage({ type: 'motherHash', payload: motherHash });
+            window.postMessage({ type: 'drawwing', payload: canvas });
+            await devvitLog(`-------motherHash sent to blocks: ${JSON.stringify(motherHash)}`);
+            await devvitLog(`-------drawwing sent to blocks: ${canvas.slice(0, 50)}`);
+          }}/>
         </>
       );
     } else {

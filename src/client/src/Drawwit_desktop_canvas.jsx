@@ -18,10 +18,12 @@ import FabricCanvas from './Fabric_canvas.jsx';
 import DrawwitTextSelector from './Drawwit_text_selector.jsx';
 import { AnimatePresence } from 'framer-motion';
 
-function DrawwitDesktopCanvas() {
+function DrawwitDesktopCanvas({onGetDrawing}) {
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
   const [selectedButton, setSelectedButton] = useState("none");
+
+  const [getCanvas, setGetCanvas] = useState(false);
   useEffect(() => {
     const handleResize = () => {
       setWidth(window.innerWidth);
@@ -70,23 +72,23 @@ function DrawwitDesktopCanvas() {
         >
           Epic Face
         </DrawingTitle>
-        <DeletingModeAdvisor
-          initial={{x: -100}}
-          animate={{x:0}}
-          transition={{duration: 0.5}}
-        >
-          Deleting Mode: On
-        </DeletingModeAdvisor>
         <FabricCanvas
           widthOfCanvas={0.9 * 0.65 *fitRectangle(840, 460, width, height).width}
           heightOfCanvas={0.75 * fitRectangle(840, 460, width, height).height}
+          getCanvas={getCanvas}
+          onGetCanvas={(canvas)=>{
+            onGetDrawing(canvas);
+          }}
         >
         </FabricCanvas>
       </CanvasMainContainer>
       <AnimatePresence mode={"wait"}>
         <ToolsMainContainer key="toolsMainContainer">
           {selectedButton === "pencil" && (
-            <DrawwitTextSelector key="textSelector" />
+            <DrawwitTextSelector
+              key="textSelector"
+              onClose={() => setSelectedButton("none")}
+            />
           )}
 
           {selectedButton === "none" && (
@@ -97,8 +99,8 @@ function DrawwitDesktopCanvas() {
                     <Tool
                       key="tool-pencil"
                       onClick={() => setSelectedButton("pencil")}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{ x: 100 }}
+                      animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
@@ -117,8 +119,8 @@ function DrawwitDesktopCanvas() {
                     <Tool
                       key="tool-eraser"
                       onClick={() => setSelectedButton("eraser")}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{ x: 100 }}
+                      animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
@@ -137,8 +139,8 @@ function DrawwitDesktopCanvas() {
                     <Tool
                       key="tool-shapes"
                       onClick={() => setSelectedButton("shapes")}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{ x: 100 }}
+                      animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
@@ -157,8 +159,8 @@ function DrawwitDesktopCanvas() {
                     <Tool
                       key="tool-text"
                       onClick={() => setSelectedButton("text")}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                      initial={{ x: 100 }}
+                      animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
@@ -183,6 +185,9 @@ function DrawwitDesktopCanvas() {
                   exit={{ y: -100, scale: 0 }}
                   transition={{ duration: 0.5 }}
                   whileTap={{ scale: 0.9 }}
+                  onClick={()=>{
+                    setGetCanvas(true)
+                  }}
                 >
                   Create Contest
                 </CreateContestButton>

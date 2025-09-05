@@ -167,21 +167,81 @@ export const FontOptions = styled(motion.div)`
   border: 4px solid black;
   z-index: 120;
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `
 
 export const CloseIcon = styled(motion.div)`
-  width: 5%;
-  height: 10%;
+  width: 7%;
+  height: 7%;
   border-radius: 50px;
   background-color: #af25ff;
   border: 3px solid black;
   transform: translate(-50%, -50%);
   position: absolute;
-  right: 5%;
-  top: 20%;
+  right: -2%;
+  top: 17%;
   z-index: 200;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 35px ;
+  user-select: none;
+`
+export const FontSelectorHeader = styled.div`
+  width: 100%;
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+export const FontTitle = styled.div`
+  width: 80%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  font-size: 50px;
+  text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+`
+
+export const CloseFontDisplayContainer = styled.div` 
+  width: 20%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const CloseFontDisplay = styled(motion.div)`
+  width: 90%;
+  height: 90%;
+  border-radius: 50px;
+  background-color: #af25ff;
+  border: 3px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px ;
+`
+
+export const FontListContainer = styled.div`
+  width: 100%;
+  height: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const FontList = styled.div`
+  width: 85%;
+  height: 85%;
+  border-radius: 30px;
+  border: 3px solid black;
+  background-color: #e2e2e2;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 `
