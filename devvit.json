@@ -33,6 +33,10 @@
     "onAppInstall": "/internal/on-app-install"
   },
   "dev": {
-    "subreddit": "drawwit_bot_dev"
+    "subreddit": "drawwitTests"
+  },
+  "permissions": {
+    "redis": true,
+    "media": true
   }
 }

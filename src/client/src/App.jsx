@@ -6,6 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import DurationFormScreen from './Drawwit_duration.jsx';
 import { DrawwitDesktopWarning } from './Drawwit_desktop_warning.jsx';
 import DrawwitDesktopCanvas from './Drawwit_desktop_canvas.jsx';
+import { navigateTo } from '@devvit/web/client';
 
 /**
  * Main application component for Drawwit.
@@ -100,6 +101,24 @@ function App() {
   const [motherHash, setMotherHash] = useState({});
 
   const [width, setWidth] = useState(window.innerWidth);
+  
+  const [isLoading, setIsLoading] = useState(null)
+
+  useEffect(() => {
+    const handleMessage = async (event) => {
+      try {
+        await devvitLog(`---Got this from blocks: ${JSON.stringify(event.data)}`);
+      } catch (err) {
+        (()=>{})();
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   async function devvitLog(message) {
     try {
@@ -221,12 +240,49 @@ function App() {
     } else if (appStage === "canvas" && width >= 1100) {
       return (
         <>
-          <DrawwitDesktopCanvas onGetDrawing={ async (canvas)=>{
-            window.postMessage({ type: 'motherHash', payload: motherHash });
-            window.postMessage({ type: 'drawwing', payload: canvas });
-            await devvitLog(`-------motherHash sent to blocks: ${JSON.stringify(motherHash)}`);
-            await devvitLog(`-------drawwing sent to blocks: ${canvas.slice(0, 50)}`);
-          }}/>
+          <DrawwitDesktopCanvas
+            onGetDrawing={async (canvas) => {
+              try {
+                setIsLoading(true)
+                setErr("Loading ...")
+
+                const response = await fetch('/api/upload-image', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    url: `${canvas}`,
+                    type: 'jpg',
+                  }),
+                });
+          
+                const imageUrl = await response.text();
+                
+                // segundo fetch
+                const body = {
+                  motherHash: motherHash,
+                  drawing: imageUrl,
+                };
+          
+                const res = await fetch('/api/drawwit/set', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(body),
+                });
+          
+                const data = await res.json();
+                navigateTo(data.postUrl)
+                // logs
+                await devvitLog(`-------contest link: ${data.postUrl}`);
+                await devvitLog(`-------drawwit/set response: ${JSON.stringify(data)}`);
+                await devvitLog(`-------api/upload-image response: ${JSON.stringify(imageUrl)}`);
+                  
+              } catch (err) {
+                setErr(`something went wrong, try again: ${err} if problem persist contact u/Ibaniez`);
+              }
+            }}
+          />
         </>
       );
     } else {
@@ -241,7 +297,11 @@ function App() {
           <ErrorMsg
             key={"error"}
             message={err}
-            onOk={() => { setErr(null) }}
+            onOk={() => { 
+              if (!isLoading){
+                setErr(null)
+              }
+            }}
           />
         </MainBackgroundContainer>
       )}
