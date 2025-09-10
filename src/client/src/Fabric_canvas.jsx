@@ -15,7 +15,7 @@ function FabricCanvas({
     if (fabricCanvasRef.current && onGetCanvas) {
       const base64 = fabricCanvasRef.current.toDataURL({
         format: 'jpeg',
-        quality: 0.5,
+        quality: 0.1,
       });
       onGetCanvas(base64);
     }
@@ -32,12 +32,11 @@ function FabricCanvas({
     fabricCanvasRef.current = canvas; // guardar referencia
 
     // color de fondo
-    canvas.backgroundColor = '#ffbdde';
+    canvas.backgroundColor = '#fff';
     canvas.renderAll();
 
     canvas.isDrawingMode = true;
 
-    // crea el pincel antes de asignar propiedades
     const brush = new PencilBrush(canvas);
     brush.width = 5;
     brush.color = 'blue';

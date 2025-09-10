@@ -89,7 +89,7 @@ export const CanvasDesign = styled(motion.div)`
   width:  90%;
   border-radius: 30px;
   border: 4px solid black;
-  background-color: #ffbdde;
+  background-color: #fff;
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
 `
 export const DrawingTitle = styled(motion.div)`

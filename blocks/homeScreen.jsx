@@ -1,10 +1,10 @@
-import { Devvit } from "@devvit/public-api";
+import { Devvit } from '@devvit/public-api';
 
-const HomeScreen = ({onCreateContest}) => {
-  return(
+const HomeScreen = ({ onCreateContest }) => {
+  return (
     <blocks>
-      <zstack height={"100%"} width={"100%"} alignment={"middle center"} backgroundColor={"#000"}>
-        <hstack height={"100%"} width={"100%"}>
+      <zstack height={'100%'} width={'100%'} alignment={'middle center'} backgroundColor={'#000'}>
+        <hstack height={'100%'} width={'100%'}>
           <image
             height="100%"
             width="100%"
@@ -15,14 +15,6 @@ const HomeScreen = ({onCreateContest}) => {
           />
         </hstack>
         <zstack height="300px" width="300px">
-          <image
-            height="100%"
-            width="100%"
-            url="drawwitbackground.png"
-            imageWidth={1920}
-            imageHeight={1080}
-            resizeMode="cover"
-          />
           <vstack height="100%" width="100%">
             <hstack height="37%" width="100%" alignment="center middle">
               <hstack width="80%" height="100%" alignment="center middle">
@@ -77,17 +69,15 @@ const HomeScreen = ({onCreateContest}) => {
                 resizeMode="fit"
               />
               <hstack height="100%" width="100%">
-                <hstack height="100%" width="50%">
-                </hstack>
-                <hstack height="100%" width="50%">
-                </hstack>
+                <hstack height="100%" width="50%"></hstack>
+                <hstack height="100%" width="50%"></hstack>
               </hstack>
             </zstack>
           </vstack>
         </zstack>
       </zstack>
     </blocks>
-  )
-}
+  );
+};
 
-export default HomeScreen
+export default HomeScreen;

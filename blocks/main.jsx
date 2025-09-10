@@ -1,6 +1,7 @@
 // Learn more at developers.reddit.com/docs
 import { Devvit, useState, useWebView, useAsync } from '@devvit/public-api';
 import HomeScreen from './homeScreen';
+import DrawwitContestScreen from './drawwitContestScreen.jsx';
 import MessageScreen from './homeScreen';
 
 Devvit.configure({
@@ -11,10 +12,25 @@ const createPost = async (context) => {
   const { reddit } = context;
   const subreddit = await reddit.getCurrentSubreddit();
   const post = await reddit.submitPost({
-    title: 'My devvit post',
+    title: 'Welcome to drawwit',
     subredditName: subreddit.name,
     // The preview appears while the post loads
-    preview: <MessageScreen message={'Loading ...'} />,
+    preview: <blocks>
+      <zstack height={"100%"} width={"100%"} alignment={"middle center"} backgroundColor={"#000"}>
+        <hstack height={"100%"} width={"100%"}>
+          <image
+            height="100%"
+            width="100%"
+            url="drawwitbackground.png"
+            imageWidth={1920}
+            imageHeight={1080}
+            resizeMode="cover"
+          />
+        </hstack>
+        <text size={"xxlarge"}>Loading ...</text>
+      </zstack>
+    </blocks>
+    ,
   });
 
   return post;
@@ -30,9 +46,7 @@ Devvit.addMenuItem({
     ui.showToast(
       "Submitting your post - upon completion you'll navigate there."
     );
-
     const post = await createPost(context);
-
     ui.navigateTo(post);
   },
 });
@@ -47,7 +61,7 @@ Devvit.addTrigger({
 // Add a post type definition
 Devvit.addCustomPostType({
   name: 'Experience Post',
-  height: 'regular',
+  height: 'tall',
   render: (_context) => {
     const [counter, setCounter] = useState(0);
     const [text, setText] = useState('');
@@ -64,17 +78,66 @@ Devvit.addCustomPostType({
       error,
     } = useAsync(async () => {
       const value = await _context.redis.get(`${selfPostId}-screen`);
-      return value ? Number(value) : 0;
+      return value ?? null
     });
 
     if (error) {
-      return <MessageScreen message={'something went wrong'} />;
+      return (
+        <blocks>
+          <zstack height={"100%"} width={"100%"} alignment={"middle center"} backgroundColor={"#000"}>
+            <hstack height={"100%"} width={"100%"}>
+              <image
+                height="100%"
+                width="100%"
+                url="drawwitbackground.png"
+                imageWidth={1920}
+                imageHeight={1080}
+                resizeMode="cover"
+              />
+            </hstack>
+            <text size={"xxlarge"}>Something went wrong</text>
+          </zstack>
+        </blocks>
+      )
     } else if (loading) {
-      return <MessageScreen message={'Loading ...'} />;
+      return(
+        <blocks>
+          <zstack height={"100%"} width={"100%"} alignment={"middle center"} backgroundColor={"#000"}>
+            <hstack height={"100%"} width={"100%"}>
+              <image
+                height="100%"
+                width="100%"
+                url="drawwitbackground.png"
+                imageWidth={1920}
+                imageHeight={1080}
+                resizeMode="cover"
+              />
+            </hstack>
+            <text size={"xxlarge"}>Loading ...</text>
+          </zstack>
+        </blocks>
+      )
+    } else if (screen !== "drawwit") {
+      return <HomeScreen onCreateContest={mount} />;
+    } else if (screen === "drawwit") {
+      return <DrawwitContestScreen />;
     } else {
       return (
-        <HomeScreen onCreateContest={mount} />
-        // <MessageScreen message={'Loading ...'} />
+        <blocks>
+          <zstack height={"100%"} width={"100%"} alignment={"middle center"} backgroundColor={"#000"}>
+            <hstack height={"100%"} width={"100%"}>
+              <image
+                height="100%"
+                width="100%"
+                url="drawwitbackground.png"
+                imageWidth={1920}
+                imageHeight={1080}
+                resizeMode="cover"
+              />
+            </hstack>
+            <text size={"xxlarge"}>{`Internal error, contact u/Ibaniez. Screen:${screen}`}</text>
+          </zstack>
+        </blocks>
       );
     }
   },
