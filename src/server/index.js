@@ -48,6 +48,11 @@ const createPost = async (aleph,contestTheme, screen, deadlineDays, deadlineHour
   await redis.set(`${post.id}-kickoffHour`, String(kickoffDate.hour));
   await redis.set(`${post.id}-kickoffMinute`, String(kickoffDate.minute));
   await redis.set(`${post.id}-drawing`, String(drawing));
+
+  await redis.set(`${post.id}-entries`, "0");
+  await redis.set(`${post.id}-entry`, "0")
+  await redis.set(`${post.id}-alephPost`, String(post.id));
+
   //
   return {id:post.id, url: post.url}
 };
@@ -67,8 +72,6 @@ router.post('/api/log-message', async (req, res) => {
 router.post('/api/drawwit/set', async (req, res) => {
   try {
     const { motherHash, drawing } = req.body;
-
-    // Validar que estén todos los datos obligatorios
     if (
       !motherHash ||
       !motherHash.aleph ||
@@ -109,6 +112,9 @@ router.post('/api/drawwit/set', async (req, res) => {
       `${post.id}-kickoffHour`,
       `${post.id}-kickoffMinute`,
       `${post.id}-drawing`,
+      `${post.id}-entries`,
+      `${post.id}-entry`,
+      `${post.id}-alephPost`,
     ];
 
     const existResults = await Promise.all(keysToCheck.map(k => redis.exists(k)));
@@ -127,12 +133,24 @@ router.post('/api/drawwit/set', async (req, res) => {
   }
 });
 
+router.get('/api/post-id', async (req, res) => {
+  try {
+    const { postId } = context;
+    if (!postId) {
+      res.status(400).json({ ok: false, error: 'postId not available in this context' });
+      return;
+    }
+    res.status(200).json({ ok: true, postId: postId });
+  } catch (err) {
+    res.status(500).json({ ok: false, error: String(err) });
+  }
+});
 
 router.get('/api/redis/get/:key', async (req, res) => {
   try {
     const { key } = req.params;
     const value = await redis.get(key);
-    res.status(200).json({ key, value });
+    res.status(200).json({ ok: true, key: key, value: value });
   } catch (err) {
     res.status(500).json({ ok: false, error: String(err) });
   }

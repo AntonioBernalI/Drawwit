@@ -1,5 +1,5 @@
 // Learn more at developers.reddit.com/docs
-import { Devvit, useState, useWebView, useAsync } from '@devvit/public-api';
+import { Devvit, useState, useWebView, useAsync, useForm } from '@devvit/public-api';
 import HomeScreen from './homeScreen';
 import DrawwitContestScreen from './drawwitContestScreen.jsx';
 import MessageScreen from './homeScreen';
@@ -7,6 +7,7 @@ import MessageScreen from './homeScreen';
 Devvit.configure({
   redditAPI: true,
 });
+
 
 const createPost = async (context) => {
   const { reddit } = context;
@@ -69,9 +70,9 @@ Devvit.addCustomPostType({
       url: 'index.html',
       onMessage: (message, hook) => {},
     });
-
     const selfPostId = _context.postId;
 
+///// redis fetching/////////////////////////////---------------------------------
     const {
       data: screen,
       loading,
@@ -80,6 +81,43 @@ Devvit.addCustomPostType({
       const value = await _context.redis.get(`${selfPostId}-screen`);
       return value ?? null
     });
+
+    const {
+      data: entriesAmount,
+      loading: entriesLoading,
+      error: entriesError,
+    } = useAsync(async () => {
+      const value = await _context.redis.get(`${selfPostId}-entries`);
+      return value ?? null
+    });
+/////////////////////////////////////////////////---------------------------------
+
+    const rateForm = useForm(
+      {
+        title: 'Rate this drawing',
+        fields: [
+          {
+            type: 'select',
+            name: 'rating',
+            label: 'How many stars?',
+            options: [
+              { label: '★☆☆☆☆ (1)', value: '1' },
+              { label: '★★☆☆☆ (2)', value: '2' },
+              { label: '★★★☆☆ (3)', value: '3' },
+              { label: '★★★★☆ (4)', value: '4' },
+              { label: '★★★★★ (5)', value: '5' },
+            ],
+          },
+        ],
+        acceptLabel: 'Submit',
+        cancelLabel: 'Cancel',
+      },
+      async (values) => {
+        _context.ui.showToast(`Thanks! You rated ${values.rating}★`);
+        const post = await _context.reddit.getPostById(selfPostId);
+        await _context.ui.navigateTo(post.url);
+      }
+    );
 
     if (error) {
       return (
@@ -120,7 +158,13 @@ Devvit.addCustomPostType({
     } else if (screen !== "drawwit") {
       return <HomeScreen onCreateContest={mount} />;
     } else if (screen === "drawwit") {
-      return <DrawwitContestScreen />;
+      return (
+        <DrawwitContestScreen
+          onRate={async () => {
+            _context.ui.showForm(rateForm);
+          }}
+        />
+      );
     } else {
       return (
         <blocks>
