@@ -90,6 +90,26 @@ Devvit.addCustomPostType({
       const value = await _context.redis.get(`${selfPostId}-entries`);
       return value ?? null
     });
+
+    const {
+      data: entry,
+      loading: entryLoading,
+      error: entryError,
+    } = useAsync(async () => {
+      const value = await _context.redis.get(`${selfPostId}-entry`);
+      return value ?? null
+    });
+
+    const {
+      data: entryGradesAmount,
+      loading: entryGradesAmountLoading,
+      error: entryGradesAmountError,
+    } = useAsync(async () => {
+
+      const entryNumber = await _context.redis.get(`${selfPostId}-entry`);
+      const value = await _context.redis.get(`${selfPostId}-entry${entryNumber}-grades`);
+      return value ?? null
+    });
 /////////////////////////////////////////////////---------------------------------
 
     const rateForm = useForm(
