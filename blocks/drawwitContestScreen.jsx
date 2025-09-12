@@ -2,7 +2,7 @@ import { Devvit } from '@devvit/public-api';
 
 
 
-function DrawwitContestScreen({onRate}) {
+function DrawwitContestScreen({onRate, currentGrade}) {
 
   return (
     <blocks>

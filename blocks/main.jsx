@@ -110,6 +110,17 @@ Devvit.addCustomPostType({
       const value = await _context.redis.get(`${selfPostId}-entry${entryNumber}-grades`);
       return value ?? null
     });
+
+    const {
+      data: currentGrade,
+      loading: currentGradeLoading,
+      error: currentGradeError,
+    } = useAsync(async () => {
+
+      const entryNumber = await _context.redis.get(`${selfPostId}-entry`);
+      const value = await _context.redis.get(`${selfPostId}-entry${entryNumber}-currentGrade`);
+      return value ?? null
+    });
 /////////////////////////////////////////////////---------------------------------
 
     const rateForm = useForm(
@@ -134,7 +145,20 @@ Devvit.addCustomPostType({
       },
       async (values) => {
         _context.ui.showToast(`Thanks! You rated ${values.rating}★`);
+
+        let gradesAmount;
+
         const post = await _context.reddit.getPostById(selfPostId);
+        const existsCurrentGrade = await _context.redis.exists(`${selfPostId}-entry${entry}-currentGrade`);
+
+        if (existsCurrentGrade === 1) {
+          gradesAmount = await _context.redis.get(`${selfPostId}-entry${entry}-currentGrade`);
+          await _context.redis.set(`${selfPostId}-entry${entry}-currentGrade`,String(Number(values.rating)/Number(gradesAmount+1)));
+        }else{
+          gradesAmount = 1
+          await _context.redis.set(`${selfPostId}-entry${entry}-currentGrade`,String(Number(values.rating)/Number(gradesAmount)));
+        }
+
         await _context.ui.navigateTo(post.url);
       }
     );

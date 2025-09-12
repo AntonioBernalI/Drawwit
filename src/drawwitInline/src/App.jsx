@@ -8,6 +8,7 @@ function App() {
 
   const [contestName, setContestName] = useState('loading...');
   const [imageUrl, setImageUrl] = useState(LG);
+  const [currentGrade, setCurrentGrade] = useState("--");
 
   useEffect(() => {
     async function fetchContestName() {
@@ -30,6 +31,7 @@ function App() {
 
       setContestName(contestData.value);
     }
+
     async function fetchImage() {
       const postIdRes = await fetch('/api/post-id');
       const postIdData = await postIdRes.json();
@@ -50,6 +52,38 @@ function App() {
 
       setImageUrl(imageData.value);
     }
+
+    async function fetchCurrentGrade() {
+      const postIdRes = await fetch('/api/post-id');
+      const postIdData = await postIdRes.json();
+      const postId = postIdData.postId;
+
+      if (postIdData.ok === false) {
+        setContestName(postIdData.error);
+        return;
+      }
+
+      const contestEntryRes = await fetch(`/api/redis/get/${postId}-entry`);
+      const contestEntryData = await contestEntryRes.json();
+
+      if (contestEntryData.ok === false) {
+        setContestName(contestEntryData.error);
+        return;
+      }
+
+      const entry = contestEntryData.value
+
+      const currentGradeRes = await fetch(`/api/redis/get/${postId}-entry${entry}-currentGrade`);
+      const currentGradeData = await currentGradeRes.json();
+
+      if (currentGradeData.ok === false) {
+        setCurrentGrade(currentGradeData.error);
+        return;
+      }
+
+      setCurrentGrade(currentGradeData.value);
+    }
+    fetchCurrentGrade()
     fetchContestName();
     fetchImage();
   }, []);
@@ -64,7 +98,7 @@ function App() {
             <Stars>
               <Star>
                 <img src={ST} width={'100%'} height={'100%'} />
-                <p>4.3</p>
+                <p>{currentGrade}</p>
               </Star>
             </Stars>
           </Header>
