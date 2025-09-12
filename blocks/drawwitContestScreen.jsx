@@ -30,12 +30,12 @@ function DrawwitContestScreen({onRate, currentGrade}) {
               </hstack>
               <vstack height={'100%'} width={'100%'}>
                 <hstack height={"50%"} width={'100%'}>
-                  <hstack height={'100%'} width={'50%'} backgroundColor={"rgba(255,0,0,0.35)"}>
+                  <hstack height={'100%'} width={'50%'}>
                   </hstack>
-                  <hstack height={'100%'} width={'50%'} backgroundColor={"rgba(0,0,255,0.37)"}>
+                  <hstack height={'100%'} width={'50%'} >
                   </hstack>
                 </hstack>
-                <hstack height={"50%"} width={'100%'} backgroundColor={"rgba(0,255,0,0.33)"}
+                <hstack height={"50%"} width={'100%'}
                         onPress={onRate}
                 >
 

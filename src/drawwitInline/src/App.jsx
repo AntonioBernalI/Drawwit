@@ -10,6 +10,27 @@ function App() {
   const [imageUrl, setImageUrl] = useState(LG);
   const [currentGrade, setCurrentGrade] = useState("--");
 
+  async function devvitLog(message) {
+    const res = await fetch('/api/log-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+  }
+
+
+  async function devvitLog(message) {
+    const res = await fetch('/api/log-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+  }
+
   useEffect(() => {
     async function fetchContestName() {
       const postIdRes = await fetch('/api/post-id');
@@ -58,6 +79,8 @@ function App() {
       const postIdData = await postIdRes.json();
       const postId = postIdData.postId;
 
+      await devvitLog(`${JSON.stringify(postIdData)}`)
+
       if (postIdData.ok === false) {
         setContestName(postIdData.error);
         return;
@@ -65,6 +88,8 @@ function App() {
 
       const contestEntryRes = await fetch(`/api/redis/get/${postId}-entry`);
       const contestEntryData = await contestEntryRes.json();
+
+      await devvitLog(`${(JSON.stringify(contestEntryData))}`)
 
       if (contestEntryData.ok === false) {
         setContestName(contestEntryData.error);
@@ -76,6 +101,8 @@ function App() {
       const currentGradeRes = await fetch(`/api/redis/get/${postId}-entry${entry}-currentGrade`);
       const currentGradeData = await currentGradeRes.json();
 
+      await devvitLog(`${JSON.stringify(currentGradeData)}`)
+
       if (currentGradeData.ok === false) {
         setCurrentGrade(currentGradeData.error);
         return;
@@ -83,9 +110,9 @@ function App() {
 
       setCurrentGrade(currentGradeData.value);
     }
-    fetchCurrentGrade()
     fetchContestName();
     fetchImage();
+    fetchCurrentGrade()
   }, []);
 
   return (
@@ -98,7 +125,7 @@ function App() {
             <Stars>
               <Star>
                 <img src={ST} width={'100%'} height={'100%'} />
-                <p>{currentGrade}</p>
+                <p>{currentGrade ? currentGrade.substring(0,4): "--"}</p>
               </Star>
             </Stars>
           </Header>

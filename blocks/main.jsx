@@ -3,6 +3,7 @@ import { Devvit, useState, useWebView, useAsync, useForm } from '@devvit/public-
 import HomeScreen from './homeScreen';
 import DrawwitContestScreen from './drawwitContestScreen.jsx';
 import MessageScreen from './homeScreen';
+import { checkUserAlreadyRated } from './redisUtil.js';
 
 Devvit.configure({
   redditAPI: true,
@@ -138,25 +139,41 @@ Devvit.addCustomPostType({
               { label: '★★★★☆ (4)', value: '4' },
               { label: '★★★★★ (5)', value: '5' },
             ],
+            required: true,
           },
         ],
         acceptLabel: 'Submit',
         cancelLabel: 'Cancel',
       },
       async (values) => {
-        _context.ui.showToast(`Thanks! You rated ${values.rating}★`);
+        const entryIndex = await _context.redis.get(`${selfPostId}-entry`);
+        const username = await _context.reddit.getCurrentUsername()
 
+        const userAlreadyRated = await checkUserAlreadyRated(_context.redis, selfPostId, entryIndex, username);
+
+        if(userAlreadyRated){
+          _context.ui.showToast(`You have already rated this drawing`);
+          return ;
+        }
+
+        _context.ui.showToast(`Thanks! You rated ${values.rating}★`);
         let gradesAmount;
 
         const post = await _context.reddit.getPostById(selfPostId);
-        const existsCurrentGrade = await _context.redis.exists(`${selfPostId}-entry${entry}-currentGrade`);
+        const existsCurrentGrade = await _context.redis.exists(`${selfPostId}-entry${entryIndex}-currentGrade`);
 
         if (existsCurrentGrade === 1) {
-          gradesAmount = await _context.redis.get(`${selfPostId}-entry${entry}-currentGrade`);
-          await _context.redis.set(`${selfPostId}-entry${entry}-currentGrade`,String(Number(values.rating)/Number(gradesAmount+1)));
+          gradesAmount = await _context.redis.get(`${selfPostId}-entry${entryIndex}-grades`);
+          const currentGrade = await _context.redis.get(`${selfPostId}-entry${entryIndex}-currentGrade`)
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-currentGrade`,String((Number(values.rating)+Number(currentGrade))/(Number(gradesAmount)+1)));
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-grades`,String(Number(gradesAmount)+1));
+
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-grade${Number(gradesAmount)-1}`,String((Number(values.rating)+Number(currentGrade))/(Number(gradesAmount)+1)));
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-grade${Number(gradesAmount)-1}-author`,username);
         }else{
           gradesAmount = 1
-          await _context.redis.set(`${selfPostId}-entry${entry}-currentGrade`,String(Number(values.rating)/Number(gradesAmount)));
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-grades`,"1");
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-currentGrade`,String(Number(values.rating)));
         }
 
         await _context.ui.navigateTo(post.url);
