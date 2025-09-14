@@ -72,8 +72,32 @@ Devvit.addCustomPostType({
       onMessage: (message, hook) => {},
     });
     const selfPostId = _context.postId;
-
 ///// redis fetching/////////////////////////////---------------------------------
+    const {
+      data: userAlreadyRated,
+      loading: userAlreadyRatedLoading,
+      error: userAlreadyRatedError,
+    } = useAsync(async () => {
+      const entryIndex = await _context.redis.get(`${selfPostId}-entry`);
+      const username = await _context.reddit.getCurrentUsername();
+
+      let gradeAmount = await _context.redis.get(`${selfPostId}-entry${entryIndex}-grades`);
+      gradeAmount = Number(gradeAmount) - 1;
+      let userAlreadyRated = false;
+
+      for (let i = 0; i <= gradeAmount; i++) {
+        const currentAuthor = await _context.redis.get(
+          `${selfPostId}-entry${entryIndex}-grade${i}-author`
+        );
+        if (currentAuthor === username) {
+          userAlreadyRated = true;
+          break;
+        }
+      }
+
+      return userAlreadyRated ?? null;
+    });
+
     const {
       data: screen,
       loading,
@@ -100,7 +124,6 @@ Devvit.addCustomPostType({
       const value = await _context.redis.get(`${selfPostId}-entry`);
       return value ?? null
     });
-
     const {
       data: entryGradesAmount,
       loading: entryGradesAmountLoading,
@@ -148,14 +171,6 @@ Devvit.addCustomPostType({
       async (values) => {
         const entryIndex = await _context.redis.get(`${selfPostId}-entry`);
         const username = await _context.reddit.getCurrentUsername()
-
-        const userAlreadyRated = await checkUserAlreadyRated(_context.redis, selfPostId, entryIndex, username);
-
-        if(userAlreadyRated){
-          _context.ui.showToast(`You have already rated this drawing`);
-          return ;
-        }
-
         _context.ui.showToast(`Thanks! You rated ${values.rating}★`);
         let gradesAmount;
 
@@ -174,6 +189,7 @@ Devvit.addCustomPostType({
           gradesAmount = 1
           await _context.redis.set(`${selfPostId}-entry${entryIndex}-grades`,"1");
           await _context.redis.set(`${selfPostId}-entry${entryIndex}-currentGrade`,String(Number(values.rating)));
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-grade${Number(gradesAmount)-1}-author`,username);
         }
 
         await _context.ui.navigateTo(post.url);
@@ -223,6 +239,10 @@ Devvit.addCustomPostType({
         <DrawwitContestScreen
           onRate={async () => {
             _context.ui.showForm(rateForm);
+          }}
+          userAlreadyRated={userAlreadyRated}
+          onReject={()=>{
+            _context.ui.showToast("You have already rated this drawing");
           }}
         />
       );

@@ -1,8 +1,9 @@
 import { Devvit } from '@devvit/public-api';
+import { checkUserAlreadyRated } from './redisUtil.js';
 
 
 
-function DrawwitContestScreen({onRate, currentGrade}) {
+function DrawwitContestScreen({onRate, userAlreadyRated, onReject}) {
 
   return (
     <blocks>
@@ -36,9 +37,14 @@ function DrawwitContestScreen({onRate, currentGrade}) {
                   </hstack>
                 </hstack>
                 <hstack height={"50%"} width={'100%'}
-                        onPress={onRate}
+                        onPress={()=>{
+                          if (userAlreadyRated){
+                            onReject();
+                            return;
+                          }
+                          onRate();
+                        }}
                 >
-
                 </hstack>
               </vstack>
             </zstack>
