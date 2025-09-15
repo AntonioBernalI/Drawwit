@@ -10,19 +10,9 @@ function App() {
   const [imageUrl, setImageUrl] = useState(LG);
   const [currentGrade, setCurrentGrade] = useState("--");
 
-  async function devvitLog(message) {
-    const res = await fetch('/api/log-message', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message }),
-    });
-  }
-
 
   async function devvitLog(message) {
-    const res = await fetch('/api/log-message', {
+    await fetch('/api/log-message', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

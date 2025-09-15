@@ -3,9 +3,9 @@ import NameFormScreen from './Guessit_contest_theme.jsx';
 import { ErrorMsg } from '../styled_components/userErrorMessage.jsx';
 import { MainBackgroundContainer } from '../styled_components/common.jsx';
 import { AnimatePresence } from 'framer-motion';
-import DurationFormScreen from './Drawwit_duration.jsx';
-import { DrawwitDesktopWarning } from './Drawwit_desktop_warning.jsx';
-import DrawwitDesktopCanvas from './Drawwit_desktop_canvas.jsx';
+import GuessitDurationFormScreen from './Guessit_duration.jsx';
+import { GuessitDesktopWarning } from './Guessit_desktop_warning.jsx';
+import GuessitDesktopCanvas from './Drawwit_desktop_canvas.jsx';
 import { navigateTo } from '@devvit/web/client';
 
 function Guessit() {
@@ -129,7 +129,7 @@ function Guessit() {
       );
     } else if (appStage === "duration") {
       return (
-        <DurationFormScreen
+        <GuessitDurationFormScreen
           onError={(errorMessage) => setErr(errorMessage)}
           durationFormSaver={(hash) => {
             setMotherHash((prev) => ({
@@ -146,15 +146,15 @@ function Guessit() {
     } else if (appStage === "canvas" && width > 710 && width < 1100) {
       return (
         <>
-          <DrawwitDesktopWarning
+          <GuessitDesktopWarning
             key = "canvas"
-          ></DrawwitDesktopWarning>
+          ></GuessitDesktopWarning>
         </>
       );
     } else if (appStage === "canvas" && width >= 1100) {
       return (
         <>
-          <DrawwitDesktopCanvas
+          <GuessitDesktopCanvas
             onGetDrawing={async (canvas) => {
               try {
                 setIsLoading(true)

@@ -4,6 +4,7 @@ import HomeScreen from './homeScreen';
 import DrawwitContestScreen from './drawwitContestScreen.jsx';
 import MessageScreen from './homeScreen';
 import { checkUserAlreadyRated } from './redisUtil.js';
+import GuessitScreen from './guessitScreen.jsx';
 
 Devvit.configure({
   redditAPI: true,
@@ -237,7 +238,7 @@ Devvit.addCustomPostType({
           </zstack>
         </blocks>
       )
-    } else if (screen !== "drawwit") {
+    } else if (screen !== "drawwit" && screen !== "guessit") {
       return <HomeScreen onCreateContest={mountClient} />;
     } else if (screen === "drawwit") {
       return (
@@ -252,6 +253,10 @@ Devvit.addCustomPostType({
           onMountDrawwitDrawing={mountDrawwitDrawing}
         />
       );
+    } else if (screen === "guessit") {
+      return (
+        <GuessitScreen/>
+      )
     } else {
       return (
         <blocks>

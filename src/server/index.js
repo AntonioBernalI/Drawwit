@@ -185,7 +185,7 @@ router.post('/api/guessit/set', async (req, res) => {
     }
 
     // Crear post y guardar datos
-    const post = await drawwitCreatePost(
+    const post = await guessitCreatePost(
       motherHash.aleph,
       motherHash.contestTheme,
       motherHash.screen,
