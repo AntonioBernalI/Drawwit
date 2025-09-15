@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import NameFormScreen from './Drawwit_contest_theme.jsx';
+import NameFormScreen from './Guessit_contest_theme.jsx';
 import { ErrorMsg } from '../styled_components/userErrorMessage.jsx';
 import { MainBackgroundContainer } from '../styled_components/common.jsx';
 import { AnimatePresence } from 'framer-motion';
@@ -8,7 +8,7 @@ import { DrawwitDesktopWarning } from './Drawwit_desktop_warning.jsx';
 import DrawwitDesktopCanvas from './Drawwit_desktop_canvas.jsx';
 import { navigateTo } from '@devvit/web/client';
 
-function Drawwit() {
+function Guessit() {
   const [err, setErr] = useState(null);
   const [appStage, setAppStage] = useState("name");
 
@@ -179,7 +179,7 @@ function Drawwit() {
                   drawing: imageUrl,
                 };
 
-                const res = await fetch('/api/drawwit/set', {
+                const res = await fetch('/api/guessit/set', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify(body),
@@ -230,4 +230,4 @@ function Drawwit() {
   )
 }
 
-export default Drawwit;
+export default Guessit;

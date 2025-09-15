@@ -119,7 +119,8 @@ export const Mode = ({title, description, onClick}) => {
         initial={{opacity:0}}
         animate={{opacity: 1}}
         exit={{opacity:0}}
-        whileTap={{rotate:15}}
+        whileTap={{rotate:12}}
+        whileHover={{rotate:10}}
         onClick={onClick}
       >
         <Title>{title}</Title>

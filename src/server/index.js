@@ -24,7 +24,7 @@ app.post('/api/upload-image', async (req, res) => {
   }
 });
 
-const createPost = async (aleph,contestTheme, screen, deadlineDays, deadlineHours, deadlineMinutes, kickoffDate, drawing) => {
+const drawwitCreatePost = async (aleph,contestTheme, screen, deadlineDays, deadlineHours, deadlineMinutes, kickoffDate, drawing) => {
   const { subredditName } = context;
   if (!subredditName) throw new Error('subredditName is required');
 
@@ -36,6 +36,40 @@ const createPost = async (aleph,contestTheme, screen, deadlineDays, deadlineHour
   //
   console.log(drawing); 
   // 
+  await redis.set(`${post.id}-aleph`, String(aleph));
+  await redis.set(`${post.id}-contestTheme`, String(contestTheme));
+  await redis.set(`${post.id}-screen`, String(screen));
+  await redis.set(`${post.id}-deadlineDays`, String(deadlineDays));
+  await redis.set(`${post.id}-deadlineHours`, String(deadlineHours));
+  await redis.set(`${post.id}-deadlineMinutes`, String(deadlineMinutes));
+  await redis.set(`${post.id}-kickoffYear`, String(kickoffDate.year));
+  await redis.set(`${post.id}-kickoffMonth`, String(kickoffDate.month));
+  await redis.set(`${post.id}-kickoffDay`, String(kickoffDate.day));
+  await redis.set(`${post.id}-kickoffHour`, String(kickoffDate.hour));
+  await redis.set(`${post.id}-kickoffMinute`, String(kickoffDate.minute));
+  await redis.set(`${post.id}-drawing`, String(drawing));
+
+  await redis.set(`${post.id}-entries`, "0");
+  await redis.set(`${post.id}-entry`, "0")
+  await redis.set(`${post.id}-alephPost`, String(post.id));
+
+  //
+  return {id:post.id, url: post.url}
+};
+
+
+const guessitCreatePost = async (aleph,contestTheme, screen, deadlineDays, deadlineHours, deadlineMinutes, kickoffDate, drawing) => {
+  const { subredditName } = context;
+  if (!subredditName) throw new Error('subredditName is required');
+
+  const post = await reddit.submitCustomPost({
+    splash: { appDisplayName: `${aleph}-${contestTheme}` },
+    subredditName,
+    title: `${aleph}-${contestTheme}`,
+  });
+  //
+  console.log(drawing);
+  //
   await redis.set(`${post.id}-aleph`, String(aleph));
   await redis.set(`${post.id}-contestTheme`, String(contestTheme));
   await redis.set(`${post.id}-screen`, String(screen));
@@ -87,7 +121,71 @@ router.post('/api/drawwit/set', async (req, res) => {
     }
 
     // Crear post y guardar datos
-    const post = await createPost(
+    const post = await drawwitCreatePost(
+      motherHash.aleph,
+      motherHash.contestTheme,
+      motherHash.screen,
+      motherHash.deadlineDays,
+      motherHash.deadlineHours,
+      motherHash.deadlineMinutes,
+      motherHash.kickoffDate,
+      drawing
+    );
+
+    // Confirmar existencia en Redis
+    const keysToCheck = [
+      `${post.id}-aleph`,
+      `${post.id}-contestTheme`,
+      `${post.id}-screen`,
+      `${post.id}-deadlineDays`,
+      `${post.id}-deadlineHours`,
+      `${post.id}-deadlineMinutes`,
+      `${post.id}-kickoffYear`,
+      `${post.id}-kickoffMonth`,
+      `${post.id}-kickoffDay`,
+      `${post.id}-kickoffHour`,
+      `${post.id}-kickoffMinute`,
+      `${post.id}-drawing`,
+      `${post.id}-entries`,
+      `${post.id}-entry`,
+      `${post.id}-alephPost`,
+    ];
+
+    const existResults = await Promise.all(keysToCheck.map(k => redis.exists(k)));
+    const allExist = existResults.every(v => v === 1);
+
+    res.status(200).json({
+      ok: true,
+      postId: post.id,
+      allExist: allExist,
+      details: keysToCheck.map((k, i) => ({ key: k, exists: existResults[i] === 1 })),
+      postUrl: post.url
+    });
+
+  } catch (err) {
+    res.status(500).json({ ok: false, error: String(err) });
+  }
+});
+
+router.post('/api/guessit/set', async (req, res) => {
+  try {
+    const { motherHash, drawing } = req.body;
+    if (
+      !motherHash ||
+      !motherHash.aleph ||
+      !motherHash.contestTheme ||
+      !motherHash.screen ||
+      motherHash.deadlineDays == null ||
+      motherHash.deadlineHours == null ||
+      motherHash.deadlineMinutes == null ||
+      !motherHash.kickoffDate ||
+      !drawing
+    ) {
+      return res.status(400).json({ error: 'Missing required contest data or drawing' });
+    }
+
+    // Crear post y guardar datos
+    const post = await drawwitCreatePost(
       motherHash.aleph,
       motherHash.contestTheme,
       motherHash.screen,
