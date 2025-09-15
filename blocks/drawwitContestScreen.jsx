@@ -3,7 +3,7 @@ import { checkUserAlreadyRated } from './redisUtil.js';
 
 
 
-function DrawwitContestScreen({onRate, userAlreadyRated, onReject}) {
+function DrawwitContestScreen({onRate, userAlreadyRated, onReject, onMountDrawwitDrawing}) {
 
   return (
     <blocks>
@@ -31,7 +31,9 @@ function DrawwitContestScreen({onRate, userAlreadyRated, onReject}) {
               </hstack>
               <vstack height={'100%'} width={'100%'}>
                 <hstack height={"50%"} width={'100%'}>
-                  <hstack height={'100%'} width={'50%'}>
+                  <hstack height={'100%'} width={'50%'}
+                          onPress={onMountDrawwitDrawing}
+                  >
                   </hstack>
                   <hstack height={'100%'} width={'50%'} >
                   </hstack>

@@ -67,8 +67,12 @@ Devvit.addCustomPostType({
   render: (_context) => {
     const [counter, setCounter] = useState(0);
     const [text, setText] = useState('');
-    const { mount } = useWebView({
+    const { mount : mountClient } = useWebView({
       url: 'index.html',
+      onMessage: (message, hook) => {},
+    });
+    const { mount : mountDrawwitDrawing } = useWebView({
+      url: 'drawwitdrawing.html',
       onMessage: (message, hook) => {},
     });
     const selfPostId = _context.postId;
@@ -189,6 +193,7 @@ Devvit.addCustomPostType({
           gradesAmount = 1
           await _context.redis.set(`${selfPostId}-entry${entryIndex}-grades`,"1");
           await _context.redis.set(`${selfPostId}-entry${entryIndex}-currentGrade`,String(Number(values.rating)));
+          await _context.redis.set(`${selfPostId}-entry${entryIndex}-grade${Number(gradesAmount)-1}`,String(Number(values.rating)));
           await _context.redis.set(`${selfPostId}-entry${entryIndex}-grade${Number(gradesAmount)-1}-author`,username);
         }
 
@@ -233,7 +238,7 @@ Devvit.addCustomPostType({
         </blocks>
       )
     } else if (screen !== "drawwit") {
-      return <HomeScreen onCreateContest={mount} />;
+      return <HomeScreen onCreateContest={mountClient} />;
     } else if (screen === "drawwit") {
       return (
         <DrawwitContestScreen
@@ -244,6 +249,7 @@ Devvit.addCustomPostType({
           onReject={()=>{
             _context.ui.showToast("You have already rated this drawing");
           }}
+          onMountDrawwitDrawing={mountDrawwitDrawing}
         />
       );
     } else {
