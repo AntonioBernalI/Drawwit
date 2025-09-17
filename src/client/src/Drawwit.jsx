@@ -155,6 +155,7 @@ function Drawwit() {
       return (
         <>
           <DrawwitDesktopCanvas
+            drawingTitle={motherHash.contestTheme}
             onGetDrawing={async (canvas) => {
               try {
                 setIsLoading(true)

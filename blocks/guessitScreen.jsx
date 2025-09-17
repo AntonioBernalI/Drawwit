@@ -3,7 +3,7 @@ import { checkUserAlreadyRated } from './redisUtil.js';
 
 
 
-function GuessitScreen({onRate, userAlreadyRated, onReject, onMountDrawwitDrawing}) {
+function GuessitScreen({onGuess}) {
 
   return (
     <blocks>
@@ -22,6 +22,17 @@ function GuessitScreen({onRate, userAlreadyRated, onReject, onMountDrawwitDrawin
           <vstack height={'100%'} width={'100%'} alignment={'center'}>
             <webview url={"guessitInline.html"} width={"100%"} height={"70%"} />
             <zstack height={'30%'} width={'100%'}>
+              <hstack height={'100%'} width={'100%'} alignment={'middle center'}>
+                <image
+                  url={"guessitinlinebuttons.png"}
+                  height={'100%'}
+                  width={'100%'}
+                />
+              </hstack>
+              <vstack height={'100%'} width={'100%'} alignment={'middle center'}>
+                <hstack height={'50%'} width={'100%'} onPress={onGuess}></hstack>
+                <hstack height={'50%'} width={'100%'} ></hstack>
+              </vstack>
             </zstack>
           </vstack>
         </zstack>

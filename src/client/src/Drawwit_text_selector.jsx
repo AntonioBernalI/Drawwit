@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Backdrop,
   CloseFontDisplay,
@@ -11,7 +11,7 @@ import {
   FontList,
   FontListContainer,
   FontOptions,
-  FontSelectorHeader,
+  FontSelectorHeader, FontTab,
   FontTitle,
   HeaderContainer,
   MainContainer,
@@ -27,8 +27,33 @@ import {
 } from '../styled_components/selectors.jsx';
 import { AnimatePresence } from 'framer-motion';
 
-function DrawwitTextSelector({onClose}) {
+function DrawwitTextSelector({onClose, config, onSelectFont}) {
   const [currentScreen, setCurrentScreen] = useState("none");
+  const [selectedFont, setSelectedFont] = useState("")
+
+  async function devvitLog(message) {
+    await fetch('/api/log-message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+  }
+
+  useEffect(() => {
+    async function logConfig(){
+      await devvitLog(config);
+    }
+    if (config?.fontFamily) {
+      setSelectedFont(config.fontFamily);
+    }
+    logConfig();
+  },[config])
+
+  useEffect(() => {
+    onSelectFont(selectedFont);
+  }, [selectedFont]);
 
   return (
     <AnimatePresence mode={"wait"}>
@@ -57,7 +82,9 @@ function DrawwitTextSelector({onClose}) {
               onClick={()=>{
                 setCurrentScreen("font");
               }}
-            >Comic Sans Ms</SelectorFont>
+            >
+              {selectedFont.split(",")[0].replace(/"/g, "").trim()}
+            </SelectorFont>
           </SelectorContainer>
         </Snippet>
         <Snippet>
@@ -157,7 +184,29 @@ function DrawwitTextSelector({onClose}) {
                     </CloseFontDisplayContainer>
                   </FontSelectorHeader>
                   <FontListContainer>
-                    <FontList></FontList>
+                    <FontList>
+                      <FontTab font="Arial, Helvetica, sans-serif" onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Arial
+                      </FontTab>
+                      <FontTab font="Verdana, Geneva, sans-serif" onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Verdana
+                      </FontTab>
+                      <FontTab font="Tahoma, Geneva, sans-serif" onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Tahoma
+                      </FontTab>
+                      <FontTab font='"Trebuchet MS", Helvetica, sans-serif' onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Trebuchet MS
+                      </FontTab>
+                      <FontTab font='"Times New Roman", Times, serif' onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Times New Roman
+                      </FontTab>
+                      <FontTab font="Georgia, serif" onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Georgia
+                      </FontTab>
+                      <FontTab font='"Courier New", Courier, monospace' onPress={setSelectedFont} close={()=>{setCurrentScreen("none")}}>
+                        Courier New
+                      </FontTab>
+                    </FontList>
                   </FontListContainer>
                 </FontOptions>
               </Backdrop>

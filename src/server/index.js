@@ -83,8 +83,7 @@ const guessitCreatePost = async (aleph,contestTheme, screen, deadlineDays, deadl
   await redis.set(`${post.id}-kickoffMinute`, String(kickoffDate.minute));
   await redis.set(`${post.id}-drawing`, String(drawing));
 
-  await redis.set(`${post.id}-entries`, "0");
-  await redis.set(`${post.id}-entry`, "0")
+  await redis.set(`${post.id}-guesses`, "0");
   await redis.set(`${post.id}-alephPost`, String(post.id));
 
   //
@@ -184,7 +183,6 @@ router.post('/api/guessit/set', async (req, res) => {
       return res.status(400).json({ error: 'Missing required contest data or drawing' });
     }
 
-    // Crear post y guardar datos
     const post = await guessitCreatePost(
       motherHash.aleph,
       motherHash.contestTheme,
@@ -196,7 +194,6 @@ router.post('/api/guessit/set', async (req, res) => {
       drawing
     );
 
-    // Confirmar existencia en Redis
     const keysToCheck = [
       `${post.id}-aleph`,
       `${post.id}-contestTheme`,
@@ -210,8 +207,7 @@ router.post('/api/guessit/set', async (req, res) => {
       `${post.id}-kickoffHour`,
       `${post.id}-kickoffMinute`,
       `${post.id}-drawing`,
-      `${post.id}-entries`,
-      `${post.id}-entry`,
+      `${post.id}-guesses`,
       `${post.id}-alephPost`,
     ];
 

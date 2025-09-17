@@ -18,12 +18,33 @@ import FabricCanvas from './Fabric_canvas.jsx';
 import DrawwitTextSelector from './Drawwit_text_selector.jsx';
 import { AnimatePresence } from 'framer-motion';
 
-function GuessitDesktopCanvas({onGetDrawing}) {
+function GuessitDesktopCanvas({onGetDrawing, drawingTitle}) {
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
   const [selectedButton, setSelectedButton] = useState("none");
-
+  const [currentTextNode, setCurrentTextNode] = useState(0);
   const [getCanvas, setGetCanvas] = useState(false);
+  const [ textList, setTextList ] = useState([{
+    fill: 'black',
+    fontFamily: 'Arial',
+    fontSize: 32,
+  }]);
+  const [textConfig, setTextConfig] = useState({
+    fill: 'black',
+    fontFamily: 'Arial',
+    fontSize: 32,
+  });
+
+  useEffect(() => {
+    setCurrentTextNode(textConfig?.id)
+  }, [textConfig]);
+
+  useEffect(() => {
+    setTextConfig(textList[currentTextNode]);
+  }, [currentTextNode]);
+
+  const [addedText, setAddedText] = useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setWidth(window.innerWidth);
@@ -61,117 +82,122 @@ function GuessitDesktopCanvas({onGetDrawing}) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'relative'
+        position: 'relative',
       }}
     >
       <CanvasMainContainer>
-        <DrawingTitle
-          initial={{x: -100}}
-          animate={{x:0}}
-          transition={{duration: 0.5}}
-        >
-          Epic Face
+        <DrawingTitle initial={{ x: -100 }} animate={{ x: 0 }} transition={{ duration: 0.5 }}>
+          {drawingTitle}
         </DrawingTitle>
         <FabricCanvas
-          widthOfCanvas={0.9 * 0.65 *fitRectangle(840, 460, width, height).width}
+          widthOfCanvas={0.9 * 0.65 * fitRectangle(840, 460, width, height).width}
           heightOfCanvas={0.75 * fitRectangle(840, 460, width, height).height}
           getCanvas={getCanvas}
-          onGetCanvas={(canvas)=>{
+          onGetCanvas={(canvas) => {
             onGetDrawing(canvas);
           }}
-        >
-        </FabricCanvas>
+          addedText={addedText}
+          onAddText={(text)=>{
+            setTextConfig(text)
+          }}
+          currentTextNode={currentTextNode}
+          onChangeTextList={(textList) => {
+            setTextList(textList);
+          }}
+          textNodeConfig={textConfig}
+          onSelectText={(id)=>{
+            setCurrentTextNode(id)
+          }}
+        ></FabricCanvas>
       </CanvasMainContainer>
-      <AnimatePresence mode={"wait"}>
+      <AnimatePresence mode={'wait'}>
         <ToolsMainContainer key="toolsMainContainer">
-          {selectedButton === "pencil" && (
+          {selectedButton === 'pencil' && (
             <DrawwitTextSelector
               key="textSelector"
-              onClose={() => setSelectedButton("none")}
+              onClose={() => setSelectedButton('none')}
+              config={textConfig}
+              onSelectFont={(font) => {
+                setTextConfig((prev) => ({
+                  ...prev,
+                  fontFamily: font,
+                }));
+              }}
             />
           )}
 
-          {selectedButton === "none" && (
+          {selectedButton === 'none' && (
             <React.Fragment key="toolbarAndButton">
               <ToolbarContainer key="toolbarContainer">
                 <Toolbar key="toolbar">
                   <ToolContainer key="toolContainer-pencil">
                     <Tool
                       key="tool-pencil"
-                      onClick={() => setSelectedButton("pencil")}
+                      onClick={() => {
+                        setSelectedButton('pencil');
+                        setAddedText(textConfig)
+                      }}
                       initial={{ x: 100 }}
                       animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
                       style={{
-                        border:
-                          selectedButton === "pencil"
-                            ? "4px solid white"
-                            : "4px solid black",
+                        border: selectedButton === 'pencil' ? '4px solid white' : '4px solid black',
                       }}
                     >
-                      <img key="img-pencil" src={Pencil} height={"92%"} width={"75%"} />
+                      <img key="img-pencil" src={Pencil} height={'92%'} width={'75%'} />
                     </Tool>
                   </ToolContainer>
 
                   <ToolContainer key="toolContainer-eraser">
                     <Tool
                       key="tool-eraser"
-                      onClick={() => setSelectedButton("eraser")}
+                      onClick={() => setSelectedButton('eraser')}
                       initial={{ x: 100 }}
                       animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
                       style={{
-                        border:
-                          selectedButton === "eraser"
-                            ? "4px solid white"
-                            : "4px solid black",
+                        border: selectedButton === 'eraser' ? '4px solid white' : '4px solid black',
                       }}
                     >
-                      <img key="img-eraser" src={Eraser} height={"75%"} width={"65%"} />
+                      <img key="img-eraser" src={Eraser} height={'75%'} width={'65%'} />
                     </Tool>
                   </ToolContainer>
 
                   <ToolContainer key="toolContainer-shapes">
                     <Tool
                       key="tool-shapes"
-                      onClick={() => setSelectedButton("shapes")}
+                      onClick={() => setSelectedButton('shapes')}
                       initial={{ x: 100 }}
                       animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
                       style={{
-                        border:
-                          selectedButton === "shapes"
-                            ? "4px solid white"
-                            : "4px solid black",
+                        border: selectedButton === 'shapes' ? '4px solid white' : '4px solid black',
                       }}
                     >
-                      <img key="img-shapes" src={Shapes} height={"70%"} width={"60%"} />
+                      <img key="img-shapes" src={Shapes} height={'70%'} width={'60%'} />
                     </Tool>
                   </ToolContainer>
 
                   <ToolContainer key="toolContainer-text">
                     <Tool
                       key="tool-text"
-                      onClick={() => setSelectedButton("text")}
+                      onClick={() => setSelectedButton('text')}
                       initial={{ x: 100 }}
                       animate={{ x: 0 }}
                       exit={{ scale: 0 }}
                       transition={{ duration: 0.5 }}
                       whileTap={{ scale: 0.9 }}
                       style={{
-                        border:
-                          selectedButton === "text"
-                            ? "4px solid white"
-                            : "4px solid black",
+                        border: selectedButton === 'text' ? '4px solid white' : '4px solid black',
                       }}
                     >
-                      <img key="img-text" src={Text} height={"90%"} width={"70%"} />
+                      <img key="img-text" src={Text} height={'90%'} width={'70%'} />
                     </Tool>
                   </ToolContainer>
                 </Toolbar>
@@ -185,8 +211,8 @@ function GuessitDesktopCanvas({onGetDrawing}) {
                   exit={{ y: -100, scale: 0 }}
                   transition={{ duration: 0.5 }}
                   whileTap={{ scale: 0.9 }}
-                  onClick={()=>{
-                    setGetCanvas(true)
+                  onClick={() => {
+                    setGetCanvas(true);
                   }}
                 >
                   Create Contest

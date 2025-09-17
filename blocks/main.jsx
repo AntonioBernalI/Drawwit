@@ -174,6 +174,11 @@ Devvit.addCustomPostType({
         cancelLabel: 'Cancel',
       },
       async (values) => {
+        if(userAlreadyRated){
+          _context.ui.showToast("You have already rated this drawing");
+          return;
+        }
+
         const entryIndex = await _context.redis.get(`${selfPostId}-entry`);
         const username = await _context.reddit.getCurrentUsername()
         _context.ui.showToast(`Thanks! You rated ${values.rating}★`);
@@ -199,6 +204,34 @@ Devvit.addCustomPostType({
         }
 
         await _context.ui.navigateTo(post.url);
+      }
+    );
+
+    const guessForm = useForm(
+      {
+        title: "What's going on in this drawing?",
+        fields: [
+          {
+            type: 'string',
+            name: 'guess',
+            label: 'Your guess',
+            required: true,
+          },
+        ],
+        acceptLabel: 'Submit',
+        cancelLabel: 'Cancel',
+      },
+      async (values) => {
+
+        const username = await _context.reddit.getCurrentUsername()
+
+        let guessAmount;
+        guessAmount = await _context.redis.get(`${selfPostId}-guesses`);
+        await _context.redis.set(`${selfPostId}-guesses`,String(Number(guessAmount)+1));
+        guessAmount = String(Number(guessAmount)+1);
+        await _context.redis.set(`${selfPostId}-guess${String(guessAmount)}`,values.guess);
+        await _context.redis.set(`${selfPostId}-guess${String(guessAmount)}-author`,username);
+        _context.ui.showToast(`You guessed: ${values.guess}`);
       }
     );
 
@@ -255,7 +288,11 @@ Devvit.addCustomPostType({
       );
     } else if (screen === "guessit") {
       return (
-        <GuessitScreen/>
+        <GuessitScreen
+          onGuess={()=>{
+            _context.ui.showForm(guessForm);
+          }}
+        />
       )
     } else {
       return (

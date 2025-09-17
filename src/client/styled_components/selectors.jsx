@@ -9,7 +9,7 @@ export const MainContainer = styled(motion.div)`
   border: 4px solid black;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   margin-top: 17%;
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
@@ -207,7 +207,7 @@ export const FontTitle = styled.div`
   text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
 `
 
-export const CloseFontDisplayContainer = styled.div` 
+export const CloseFontDisplayContainer = styled.div`
   width: 20%;
   height: 100%;
   display: flex;
@@ -243,5 +243,42 @@ export const FontList = styled.div`
   background-color: #e2e2e2;
   box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
 `
+
+const Tab = styled(motion.div)`
+  width: 90%;
+  height: 25%;
+  background-color: white;
+  border: 3px solid black;
+  box-shadow: 4px 4px 4px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 35px;
+  margin-bottom: 0.5%;
+  margin-top: 0.5%;
+  border-radius: 20px;
+`
+
+export const FontTab = ({children, font, onPress, close}) => {
+  return (
+    <Tab
+      whileHover={{scaleX:1.1}}
+      whileTap={{scaleX:0.9}}
+      style={{
+        fontFamily: font,
+      }}
+      onClick={()=>{
+        onPress(font);
+        close();
+      }}
+    >
+      {children}
+    </Tab>
+  )
+}

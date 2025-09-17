@@ -1,52 +1,112 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CanvasDesign } from '../styled_components/canvas.jsx';
-import { Canvas, PencilBrush } from 'fabric';
+import { Canvas, IText } from 'fabric';
 
 function FabricCanvas({
-  widthOfCanvas,
-  heightOfCanvas,
-  getCanvas,
-  onGetCanvas,
-}) {
+                        widthOfCanvas,
+                        heightOfCanvas,
+                        getCanvas,
+                        onGetCanvas,
+                        addedText,
+                        onAddText,
+                        onSelectText,
+                        textNodeConfig,
+                        currentTextNode,
+                        onChangeTextList
+                      }) {
   const canvasRef = useRef(null);
-  const fabricCanvasRef = useRef(null); // referencia para el canvas de fabric
+  const fabricCanvasRef = useRef(null);
+
+  const[ textList, setTextList ] = useState([]);
 
   useEffect(() => {
-    if (fabricCanvasRef.current && onGetCanvas) {
+    onChangeTextList(textList);
+  }, [textList]);
+
+  const updateText = (id, newProps) => {
+    const object = textList.find((t) => t.id === id);
+    if (object && fabricCanvasRef.current) {
+      object.set(newProps);
+      fabricCanvasRef.current.requestRenderAll();
+    }
+  };
+
+  useEffect(()=>{
+    updateText(currentTextNode,textNodeConfig);
+  },[currentTextNode, textNodeConfig])
+
+
+  useEffect(() => {
+    if (!canvasRef.current) return;
+
+    if (!fabricCanvasRef.current) {
+      const canvas = new Canvas(canvasRef.current, {
+        width: widthOfCanvas - 20,
+        height: heightOfCanvas - 20,
+      });
+
+      fabricCanvasRef.current = canvas;
+      canvas.backgroundColor = '#fff';
+      canvas.renderAll();
+    }
+
+    return () => {
+      if (fabricCanvasRef.current) {
+        fabricCanvasRef.current.dispose();
+        fabricCanvasRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (fabricCanvasRef.current) {
+      fabricCanvasRef.current.setWidth(widthOfCanvas - 20);
+      fabricCanvasRef.current.setHeight(heightOfCanvas - 20);
+      fabricCanvasRef.current.renderAll();
+    }
+  }, [widthOfCanvas, heightOfCanvas]);
+
+  useEffect(() => {
+    if (fabricCanvasRef.current && onGetCanvas && getCanvas) {
       const base64 = fabricCanvasRef.current.toDataURL({
         format: 'jpeg',
         quality: 0.1,
       });
       onGetCanvas(base64);
     }
-  }, [getCanvas]); // se ejecuta cuando cambie getCanvas
+  }, [getCanvas]);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (addedText && fabricCanvasRef.current) {
+      const text = new IText('Click to add Text', {
+        left: widthOfCanvas/2,
+        top: heightOfCanvas/2,
+        fontSize: addedText.fontSize,
+        fill: addedText.fill,
+        fontFamily: addedText.fontFamily,
+        selectable: true,
+        editable: true,
+      });
 
-    const canvas = new Canvas(canvasRef.current, {
-      width: widthOfCanvas-20,
-      height: heightOfCanvas-20,
-    });
+      fabricCanvasRef.current.add(text);
+      fabricCanvasRef.current.setActiveObject(text);
+      fabricCanvasRef.current.requestRenderAll();
 
-    fabricCanvasRef.current = canvas; // guardar referencia
+      setTextList((prev) => [...prev, text]);
 
-    // color de fondo
-    canvas.backgroundColor = '#fff';
-    canvas.renderAll();
+      text.on('selected', () => {
+        onSelectText(textList.indexOf(textList.at(-1)))
+      });
 
-    canvas.isDrawingMode = true;
+      text.on('deselected', () => {
+      });
 
-    const brush = new PencilBrush(canvas);
-    brush.width = 5;
-    brush.color = 'blue';
-    canvas.freeDrawingBrush = brush;
-
-    return () => {
-      canvas.dispose();
-      fabricCanvasRef.current = null;
-    };
-  }, [widthOfCanvas, heightOfCanvas]);
+      onAddText({
+        ...textList.at(-1),
+        id: textList.indexOf(textList.at(-1))
+      });
+    }
+  }, [addedText]);
 
   return (
     <CanvasDesign
